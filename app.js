@@ -3,9 +3,10 @@
  * Module dependencies.
  */
 
+require('coffee-script');
+require('express-namespace');
+
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
 
@@ -27,8 +28,12 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+if ('test' == app.get('env')) {
+  app.set('port', 3001);
+}
+
+// Routes
+require('./controllers/suites')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
