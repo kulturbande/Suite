@@ -1,7 +1,6 @@
 suites = (app) ->
-
 	app.namespace '/suites', ->
 		app.get '/', (req, res) ->
 			res.render 'suites/index',
-				title: 'Suite'
+				title: 'Suites'
 module.exports = suites
