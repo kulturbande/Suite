@@ -9,7 +9,9 @@
     "express": "3.3.1",
     "jade": "*",
     "coffee-script": "~1.6.3",
-    "express-namespace": "~0.1.1"
+    "express-namespace": "~0.1.1",
+    "connect-assets": "~2.5.0",
+    "less": "~1.4.1"
   },
   "devDependencies": {
     "node-dev": "~2.0.1",
