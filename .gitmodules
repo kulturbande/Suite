@@ -1,3 +1,6 @@
 [submodule "suites/network"]
 	path = suites/network
 	url = https://Kulturbande@github.com/kulturbande/TestCase-Network.git
+[submodule "suites/render"]
+	path = suites/render
+	url = https://Kulturbande@github.com/kulturbande/TestCase-Render.git
