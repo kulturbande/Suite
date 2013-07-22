@@ -1,4 +1,8 @@
 suites = (app) ->
+	# redirect to main route
+	app.get '/', (req, res) ->
+		res.redirect '/suites'
+
 	app.namespace '/suites', ->
 		app.get '/', (req, res) ->
 			res.render 'suites/index',
