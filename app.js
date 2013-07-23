@@ -20,9 +20,16 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
+app.use(require('connect-assets')());
+
+// Helpers
+app.use(function(req, res, next){
+  res.locals = require('./helpers/string_helper')();
+  next();
+});
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(require('connect-assets')());
 
 // development only
 if ('development' == app.get('env')) {

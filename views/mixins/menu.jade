@@ -1,6 +1,7 @@
-mixin main-menu(title)
-  .pure-menu.pure-menu-open.pure-menu-horizontal.suite-menu
-      a(href="/").pure-menu-heading= title
+mixin main-menu(items)
+  .pure-menu.pure-menu-open.pure-menu-horizontal.main-menu
+      a(href="/").pure-menu-heading Suite
       ul
-        li
-          a(href="/suites/network") Network
+        - each item in items
+          li
+            a(href="/suites/#{item}")= capitalize(item)
