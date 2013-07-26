@@ -14,7 +14,7 @@ var app = module.exports = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/app/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
 app.use(express.logger('dev'));
@@ -24,7 +24,7 @@ app.use(require('connect-assets')());
 
 // Helpers
 app.use(function(req, res, next){
-  res.locals = require('./helpers/string_helper')();
+  res.locals = require('./app/helpers/string_helper')();
   next();
 });
 
@@ -41,7 +41,7 @@ if ('test' == app.get('env')) {
 }
 
 // Routes
-require('./controllers/suites')(app);
+require('./app/controllers/suites')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -1,3 +1,4 @@
+
 suites = (app) ->
 	main_menu = ['network', 'render']
 
@@ -18,5 +19,5 @@ suites = (app) ->
 
 		app.get '/:name/load', (req, res) ->
 			app.engine('html', require('ejs').renderFile);
-			res.render "../suites/#{req.params.name}/index.html"
+			res.render "../../suites/#{req.params.name}/index.html"
 module.exports = suites

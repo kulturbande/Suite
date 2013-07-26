@@ -1,9 +1,10 @@
 {
-  "name": "Suite",
+  "name": "suite",
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "./bin/test"
   },
   "dependencies": {
     "express": "3.3.1",
@@ -12,7 +13,8 @@
     "express-namespace": "~0.1.1",
     "connect-assets": "~2.5.0",
     "less": "~1.4.1",
-    "ejs": "~0.8.4"
+    "ejs": "~0.8.4",
+    "nodegit": "0.0.79"
   },
   "devDependencies": {
     "node-dev": "~2.0.1",

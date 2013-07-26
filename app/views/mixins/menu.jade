@@ -1,7 +1,10 @@
-mixin main-menu(items)
+mixin main-menu(items, selected)
   .pure-menu.pure-menu-open.pure-menu-horizontal.main-menu
       a(href="/").pure-menu-heading Suite
       ul
         - each item in items
-          li
+          - var css_class = "";
+          - if (item == selected) 
+            - css_class = 'pure-menu-selected';
+          li(class= css_class)
             a(href="/suites/#{item}")= capitalize(item)
