@@ -6,6 +6,7 @@
 require('coffee-script');
 require('express-namespace');
 
+
 var express = require('express')
   , http = require('http')
   , path = require('path');
@@ -30,6 +31,7 @@ app.use(function(req, res, next){
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('root_folder', __dirname);
 
 // development only
 if ('development' == app.get('env')) {
