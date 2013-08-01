@@ -1,5 +1,7 @@
-assert 	= require 'assert'
-Suite 	= require '../../app/models/suite'
+assert 			= require 'assert'
+redis			= require('redis').createClient()
+Suite 			= require '../../app/models/suite'
+SuiteFacotry 	= require '../factories/suite_factory'
 
 describe 'Suite', ->
 
@@ -21,23 +23,59 @@ describe 'Suite', ->
 				assert.equal suite.id, 'network-123'
 
 	describe 'persistence', ->
-		it 'builds a key for redis'
+		it 'builds a key for redis', ->
+			assert.equal Suite.key(), 'Suite:test'
 
 		describe 'save', ->
-			it 'returns a Suite - object'
+			suite = null
+			before (done) ->
+				suite = new Suite {path_name: 'render'}
+				suite.save ->
+					done()
+			it 'returns a Suite - object', ->
+				assert.instanceOf suite, Suite
 
 		describe 'get one', ->
 			describe 'existing record', ->
-				it 'returns a Suite - object'
-				it 'fetches the correct object'
+				suite = null
+				before (done) ->
+					SuiteFacotry.createOne {path_name: 'render'}, () ->
+						Suite.getById 'render', (err, _suite) ->
+							suite = _suite
+							done()
+				it 'returns a Suite - object', ->
+					assert.instanceOf suite, Suite
+				it 'fetches the correct object', ->
+					assert.equal suite.name, 'Render'
+
 			describe 'non-existing record', ->
-				it 'returns an error'
+				it 'returns an error', (done) ->
+					Suite.getById 'network', (err, json) ->
+						assert.equal err.message, "Suite 'network' could not be found."
+						done()
 
 		describe 'get all', ->
-			it 'retrieves all pies'
+			suites = null
+			before (done) ->
+				SuiteFacotry.createSeveral ->
+					Suite.all (err, _suites) ->
+						suites = _suites
+						done();
+			it 'retrieves all pies', ->
+				assert.equal suites.length, 2
 
 		describe 'delete', ->
-			it 'is removed from the database'
+			before (done) ->
+				SuiteFacotry.createOne {path_name:'render'}, done
+			it 'is removed from the database', (done) ->
+				Suite.getById 'render', (err, suite) ->
+					suite.destroy (err) ->
+						Suite.getById 'render', (err) ->
+							assert.equal err.message, "Suite 'render' could not be found."
+							done()
+
+		afterEach ->
+			redis.del Suite.key()
 
 	describe 'validation', ->
 		it 'requires a path_name'

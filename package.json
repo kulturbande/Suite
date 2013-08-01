@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
+    "devserver": "./bin/devserver",
     "test": "./bin/test"
   },
   "dependencies": {
@@ -15,7 +16,8 @@
     "less": "~1.4.1",
     "ejs": "~0.8.4",
     "nodegit": "0.0.79",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "redis": "~0.8.4"
   },
   "devDependencies": {
     "node-dev": "~2.0.1",
