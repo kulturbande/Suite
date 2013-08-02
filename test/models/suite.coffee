@@ -78,5 +78,8 @@ describe 'Suite', ->
 			redis.del Suite.key()
 
 	describe 'validation', ->
-		it 'requires a path_name'
+		it 'requires a path_name', ->
+			assert.throws (->
+				new Suite()
+			), /provide a path_name/
 
