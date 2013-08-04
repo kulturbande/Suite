@@ -17,7 +17,9 @@
     "ejs": "~0.8.4",
     "nodegit": "0.0.79",
     "async": "~0.2.9",
-    "redis": "~0.8.4"
+    "redis": "~0.8.4",
+    "git": "~0.1.5",
+    "underscore": "~1.5.1"
   },
   "devDependencies": {
     "node-dev": "~2.0.1",

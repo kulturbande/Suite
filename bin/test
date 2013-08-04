@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-./node_modules/mocha/bin/mocha test/_helper.js test/controllers/*.coffee test/models/*.coffee
+./node_modules/mocha/bin/mocha test/_helper.js test/controllers/*.coffee test/models/*.coffee --growl --watch

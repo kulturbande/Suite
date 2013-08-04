@@ -1,4 +1,6 @@
 assert 			= require 'assert'
+fs 				= require 'fs'
+path 			= require 'path'
 redis			= require('redis').createClient()
 Suite 			= require '../../app/models/suite'
 SuiteFacotry 	= require '../factories/suite_factory'
@@ -18,13 +20,33 @@ describe 'Suite', ->
 		describe "generate id", ->
 			it "default Id", ->
 				assert.equal suite.id, 'network'
-			it "replace whitespace", ->
-				suite = new Suite {path_name: 'network 123'}
-				assert.equal suite.id, 'network-123'
 
 	describe 'persistence', ->
 		it 'builds a key for redis', ->
 			assert.equal Suite.key(), 'Suite:test'
+
+		it 'has a main folder', ->
+			assert.match Suite.main_folder(), '\/suites'
+
+		describe 'read repository', ->
+			file = path.join(Suite.main_folder(), 'bar')
+			folder = path.join(Suite.main_folder(), 'foo_bar')
+			before (done) ->
+				fs.writeFile file, 'bar', (err) ->
+					fs.mkdir folder, (err) ->
+						done()
+			it 'throws an expetion if no file/folder is available', ->
+				assert.throws (->
+					new Suite {'path_name': 'foo'}
+				), Error
+			it 'throws an expetion if no folder is available', ->
+				assert.throws (->
+					new Suite {'path_name': 'bar'}
+				), Error
+			after (done) ->
+				fs.unlink file, (err) ->
+					fs.rmdir folder, (err) ->
+						done()
 
 		describe 'save', ->
 			suite = null
@@ -64,7 +86,7 @@ describe 'Suite', ->
 			it 'retrieves all pies', ->
 				assert.equal suites.length, 2
 
-		describe 'delete', ->
+		describe 'delete', -> 
 			before (done) ->
 				SuiteFacotry.createOne {path_name:'render'}, done
 			it 'is removed from the database', (done) ->
@@ -82,4 +104,58 @@ describe 'Suite', ->
 			assert.throws (->
 				new Suite()
 			), /provide a path_name/
+
+		it 'requires a valid folder name', ->
+			assert.throws (->
+				new Suite {'path_name': 'foo'}
+			), /Can\'t find or read that folder/
+
+	describe 'synchronize', ->
+		describe 'without database entries', ->
+			synchronized_entries = []
+			before (done) ->
+				Suite.synchronize (err, _entries) ->	
+						synchronized_entries = _entries
+						done()
+			it 'has two entries', (done) ->
+				Suite.all (err, suites) ->
+					assert.equal suites.length, 2
+					done()
+			it 'should find two suites', ->
+				assert.equal synchronized_entries.length, 2
+			
+		describe 'with one database entry', ->
+			beforeEach (done) ->
+				SuiteFacotry.createOne {path_name: 'render'}, done 
+			it 'should find one previous suite', (done) ->
+				Suite.all (err, suites) ->
+					assert.equal suites.length, 1
+					assert.equal suites[0].path_name, 'render'
+					done()
+			it 'should find another suite', (done) ->
+				Suite.synchronize (err, entries) ->
+					assert.equal entries.length, 1
+					assert.equal entries[0].path_name, 'network'
+					Suite.all (err, suites) ->
+						assert.equal suites.length, 2
+						done()
+
+		describe 'with all entries', ->
+			suites = []
+			before (done) ->
+				SuiteFacotry.createSeveral ->
+					Suite.all (err, _suites) ->
+						suites = _suites
+						done()
+			it 'has nothing to do', (done) ->
+				Suite.synchronize (err, entries) ->
+					assert.equal entries.length, 0
+					done()
+			it 'has two entries', ->
+				assert.equal suites.length, 2
+
+		afterEach ->
+			redis.del Suite.key()
+					
+
 
