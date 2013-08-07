@@ -1,35 +1,46 @@
-Pie = require '../models/suite'
-suites = (app) ->
+Suite = require '../models/suite'
+
+class Suites
+	app = null
 	main_menu = ['network', 'render']
 
-	# redirect to main route
-	app.get '/', (req, res) ->
-		res.redirect '/suites'
+	constructor: (app) ->
+		@app = app
+		Suite.synchronize ->
+			console.log 'Suites synchronized!'
+		@routes()
+		@
 
-	app.namespace '/suites', ->
+	routes: ->
+		app = @app
+		_self = @
 		app.get '/', (req, res) ->
-			res.render 'suites/index',
-				main_menu: main_menu
+			res.redirect '/suites'
 
-		app.get '/:name', (req, res) ->
-			# git.repo "#{__dirname}/../../suites/#{req.params.name}/.git", (error, repository) ->
-			# 	if error
-			# 		throw error
+		app.namespace '/suites', ->
+			app.get '/', (req, res) ->
+				_self.index(req, res)
 
-				# git.tree repository.rawRepo
-				# git.tree.walk()
-				# app.on 'entry', (error, entry) ->
-				# 	console.log entry
-				# repository.branch 'master', (error, branch) ->
-				# 	if error
-				# 		throw error
-				# 	console.log branch
-			res.render 'suites/view',
+			app.get '/:name', (req, res) ->
+				_self.view(req, res)
+
+			app.get '/:name/load', (req, res) ->
+				_self.load(req, res)
+
+	view: (req, res) ->
+		Suite.all (err, items) ->
+	 		res.render 'suites/view',
 				title: req.params.name
-				main_menu: main_menu
+				main_menu: items
 				name: req.params.name
 
-		app.get '/:name/load', (req, res) ->
-			app.engine('html', require('ejs').renderFile);
-			res.render "../../suites/#{req.params.name}/index.html"
-module.exports = suites
+	load: (req, res) ->
+		@app.engine('html', require('ejs').renderFile);
+		res.render "../../suites/#{req.params.name}/index.html"
+
+	index: (req, res) ->
+		Suite.all (err, items) ->
+			res.render 'suites/index',
+	 			main_menu: items
+
+module.exports = Suites

@@ -83,7 +83,7 @@ describe 'Suite', ->
 					Suite.all (err, _suites) ->
 						suites = _suites
 						done();
-			it 'retrieves all pies', ->
+			it 'retrieves all suites', ->
 				assert.equal suites.length, 2
 
 		describe 'delete', -> 

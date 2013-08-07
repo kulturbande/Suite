@@ -1,3 +1,4 @@
+Suites = require '../../app/controllers/suites'
 describe "Suites", ->
 
 	describe "GET /", ->
@@ -25,8 +26,8 @@ describe "Suites", ->
 			assert.hasTag body, '//head/title', 'Suites'
 
 		it "has all suites", ->
-			assert.hasTag body, '//div/ul/li/a', 'Network'
-			assert.hasTag body, '//div/ul/li[2]/a', 'Render'
+			assert.hasTag body, '//div/ul/li/a', 'Render'
+			assert.hasTag body, '//div/ul/li[2]/a', 'Network'
 
 	describe "GET /suites/:name", ->
 		body = null
@@ -39,6 +40,11 @@ describe "Suites", ->
 
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Suites - Network'
+
+		it "has all suites", ->
+			assert.hasTag body, '//div/ul/li/a', 'Render'
+			assert.hasTag body, '//div/ul/li[2]/a', 'Network'
+			
 
 	describe "GET /suites/network/load", ->
 		body = null
@@ -63,3 +69,4 @@ describe "Suites", ->
 
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Test Suite - Render'
+

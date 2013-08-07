@@ -43,7 +43,7 @@ if ('test' == app.get('env')) {
 }
 
 // Routes
-require('./app/controllers/suites')(app);
+require('./app/routes')(app);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

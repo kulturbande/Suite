@@ -4,7 +4,7 @@ mixin main-menu(items, selected)
       ul
         - each item in items
           - var css_class = "";
-          - if (item == selected) 
+          - if (item.id == selected) 
             - css_class = 'pure-menu-selected';
           li(class= css_class)
-            a(href="/suites/#{item}")= capitalize(item)
+            a(href="/suites/#{item.id}")= capitalize(item.name)
