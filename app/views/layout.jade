@@ -1,7 +1,12 @@
 doctype 5
 html
   head
-    title= title ? "Suites - "+ capitalize(title) : "Suites" 
+    title= title ? "Suites - "+ capitalize(title) : "Suites"
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     != css('style')
   body
     block content
+
+    script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/bower_components/jquery/jquery.min.js')
+    != js('app')
