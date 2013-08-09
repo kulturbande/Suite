@@ -1,6 +1,7 @@
 assert 			= require 'assert'
 fs 				= require 'fs'
 path 			= require 'path'
+_ 				= require 'underscore'
 redis			= require('redis').createClient()
 Suite 			= require '../../app/models/suite'
 SuiteFacotry 	= require '../factories/suite_factory'
@@ -156,6 +157,16 @@ describe 'Suite', ->
 
 		afterEach ->
 			redis.del Suite.key()
+
+	describe 'git', ->
+		describe 'get branchs', ->
+			branches = []
+			before (done) ->
+				Suite.get_branches 'network', (err, _branches) ->
+					branches = _branches
+					done()
+			it 'should have a master branch', ->
+				assert.notEqual _.indexOf(branches, 'master'), -1
 					
 
 

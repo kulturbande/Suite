@@ -1,10 +1,15 @@
 mixin main-menu(items, selected)
-  .pure-menu.pure-menu-open.pure-menu-horizontal.main-menu
-      a(href="/").pure-menu-heading Suite
-      ul
+  header
+    .navbar
+      a(href="/").navbar-brand Suite
+      ul.nav.navbar-nav
         - each item in items
           - var css_class = "";
           - if (item.id == selected) 
-            - css_class = 'pure-menu-selected';
+            - css_class = 'active';
           li(class= css_class)
             a(href="/suites/#{item.id}")= capitalize(item.name)
+      - if(selected)
+        .navbar-form.pull-right
+          a(href="/suites/#{item.id}/load", target="_blank").btn.btn-default Load
+      

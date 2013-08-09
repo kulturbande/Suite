@@ -32,7 +32,7 @@ class Suites
 		 		res.render 'suites/view',
 					title: item.name
 					main_menu: items
-					name: item.name
+					item: item
 
 	load: (req, res) ->
 		@app.engine('html', require('ejs').renderFile);
