@@ -116,8 +116,8 @@ describe 'Suite', ->
 			synchronized_entries = []
 			before (done) ->
 				Suite.synchronize (err, _entries) ->	
-						synchronized_entries = _entries
-						done()
+					synchronized_entries = _entries
+					done()
 			it 'has two entries', (done) ->
 				Suite.all (err, suites) ->
 					assert.equal suites.length, 2
@@ -158,15 +158,17 @@ describe 'Suite', ->
 		afterEach ->
 			redis.del Suite.key()
 
-	describe 'git', ->
-		describe 'get branchs', ->
-			branches = []
-			before (done) ->
-				Suite.get_branches 'network', (err, _branches) ->
-					branches = _branches
-					done()
-			it 'should have a master branch', ->
-				assert.notEqual _.indexOf(branches, 'master'), -1
+	# describe 'git', ->
+	# 	describe 'get tags', ->
+	# 		tags = []
+	# 		before (done) ->
+	# 			Suite.synchronize (err, _entries) ->
+	# 				Suite.get_tags 'network', (err, _tags) ->
+	# 					console.log _tags
+	# 					tags = _tags
+	# 					done()
+	# 		it 'should have a v0.0.1 tag', ->
+	# 			assert.notEqual _.indexOf(tags, 'v0.0.1'), -1
 					
 
 

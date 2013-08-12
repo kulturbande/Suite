@@ -1,11 +1,16 @@
 Suite = require '../models/suite'
+path = require 'path'
+express = require 'express'
 
 class Suites
 	app = null
 
 	constructor: (app) ->
 		@app = app
-		Suite.synchronize ->
+		Suite.synchronize (err, _suites) ->
+			Suite.all (err, suites) ->
+				suites.forEach (suite) ->
+					app.use express.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
 			console.log 'Suites synchronized!'
 		@routes()
 		@

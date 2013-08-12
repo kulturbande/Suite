@@ -50,11 +50,11 @@ class Suite
 				else
 					callback null, synchronized_suites
 
-	@get_branches: (id, callback) ->
-		_self = @
+	@get_tags: (id, callback) ->
 		@getById id, (err, suite) ->
 			repo = new Repo suite.path, {is_bare: true}, (err, repo) ->
-				callback(null, null)
+				repo.tags (err, tags) ->
+					callback err, tags
 
 	constructor: (attributes) ->
 		@[key] = value for key, value of attributes
