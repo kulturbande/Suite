@@ -5,6 +5,7 @@ _ 				= require 'underscore'
 redis			= require('redis').createClient()
 Suite 			= require '../../app/models/suite'
 SuiteFacotry 	= require '../factories/suite_factory'
+Git 			= require '../../app/libs/git'
 
 describe 'Suite', ->
 
@@ -17,6 +18,8 @@ describe 'Suite', ->
 			assert.equal suite.name, 'Network'
 		it "sets path", ->
 			assert.match suite.path, '\/suites\/network'
+		it "sets git repository", ->
+			assert.equal suite.repository != null, true
 
 		describe "generate id", ->
 			it "default Id", ->
@@ -29,7 +32,7 @@ describe 'Suite', ->
 		it 'has a main folder', ->
 			assert.match Suite.main_folder(), '\/suites'
 
-		describe 'read repository', ->
+		describe 'read folder', ->
 			file = path.join(Suite.main_folder(), 'bar')
 			folder = path.join(Suite.main_folder(), 'foo_bar')
 			before (done) ->
@@ -87,7 +90,7 @@ describe 'Suite', ->
 			it 'retrieves all suites', ->
 				assert.equal suites.length, 2
 
-		describe 'delete', -> 
+		describe 'delete', ->
 			before (done) ->
 				SuiteFacotry.createOne {path_name:'render'}, done
 			it 'is removed from the database', (done) ->
@@ -115,7 +118,7 @@ describe 'Suite', ->
 		describe 'without database entries', ->
 			synchronized_entries = []
 			before (done) ->
-				Suite.synchronize (err, _entries) ->	
+				Suite.synchronize (err, _entries) ->
 					synchronized_entries = _entries
 					done()
 			it 'has two entries', (done) ->
@@ -124,10 +127,10 @@ describe 'Suite', ->
 					done()
 			it 'should find two suites', ->
 				assert.equal synchronized_entries.length, 2
-			
+
 		describe 'with one database entry', ->
 			beforeEach (done) ->
-				SuiteFacotry.createOne {path_name: 'render'}, done 
+				SuiteFacotry.createOne {path_name: 'render'}, done
 			it 'should find one previous suite', (done) ->
 				Suite.all (err, suites) ->
 					assert.equal suites.length, 1
@@ -158,17 +161,16 @@ describe 'Suite', ->
 		afterEach ->
 			redis.del Suite.key()
 
-	# describe 'git', ->
-	# 	describe 'get tags', ->
-	# 		tags = []
-	# 		before (done) ->
-	# 			Suite.synchronize (err, _entries) ->
-	# 				Suite.get_tags 'network', (err, _tags) ->
-	# 					console.log _tags
-	# 					tags = _tags
-	# 					done()
-	# 		it 'should have a v0.0.1 tag', ->
-	# 			assert.notEqual _.indexOf(tags, 'v0.0.1'), -1
-					
+	describe 'git', ->
+		describe 'get branches', ->
+			branches = []
+			before (done) ->
+				Suite.synchronize (err, _entries) ->
+					Suite.get_branches 'network', (err, _branches) ->
+						branches = _branches
+						done()
+			it 'should have branches', ->
+				assert.equal branches.length > 1, true
+
 
 

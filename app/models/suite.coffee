@@ -3,7 +3,8 @@ path = require 'path'
 fs = require 'fs'
 async = require 'async'
 _ = require 'underscore'
-Repo = require('git').Repo
+Git = require '../libs/git'
+
 class Suite
 	@key: ->
 		"Suite:#{process.env.NODE_ENV}"
@@ -50,15 +51,14 @@ class Suite
 				else
 					callback null, synchronized_suites
 
-	@get_tags: (id, callback) ->
+	@get_branches: (id, callback) ->
 		@getById id, (err, suite) ->
-			repo = new Repo suite.path, {is_bare: true}, (err, repo) ->
-				repo.tags (err, tags) ->
-					callback err, tags
+			suite.repository.branch (branches) ->
+				callback err, branches
 
 	constructor: (attributes) ->
 		@[key] = value for key, value of attributes
-		unless @path_name 
+		unless @path_name
 			throw new Error("You need to provide a path_name!")
 		unless @name
 			@name = @path_name.slice(0,1).toUpperCase() + @path_name.slice(1)
@@ -67,6 +67,7 @@ class Suite
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
+		@repository = new Git(@path)
 		@
 
 	save: (callback) ->
@@ -84,17 +85,5 @@ class Suite
 				throw new Error "This isn't a folder"
 		catch error
 			throw new Error "Can't find or read that folder"
-
-	read_respository: (callback) ->
-		try 
-			stats = fs.statSync(@path)
-			unless stats.isDirectory()
-				callback "This isn't a folder"
-			repo = new Repo @path, {is_bare: true}, (err, repo) ->
-				repo.heads (err, heads) ->
-					console.log heads
-					callback(err, folder)
-		catch error
-			callback "Can't find or read that folder"
 
 module.exports = Suite

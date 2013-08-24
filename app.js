@@ -42,9 +42,13 @@ if ('test' == app.get('env')) {
   app.set('port', 3001);
 }
 
+// http.request({}, function(request, response) {
+// 	console.log('test');
+// });
+
 // Routes
 require('./app/routes')(app);
 
-http.createServer(app).listen(app.get('port'), function(){
+app_server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
