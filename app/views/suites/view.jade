@@ -1,9 +1,13 @@
 include ../mixins/menu
+include ../mixins/control-elements
 extends ../layout
 
 block content
   mixin main-menu(main_menu, item.id)
 
   .row
-    .col-lg-8.col-offset-4
+    .col-lg-4
+      h3 Change Suite
+      mixin dropdown(dropdown.branch)
+    .col-lg-8
       iframe(src="/suites/#{item.path_name}/load")

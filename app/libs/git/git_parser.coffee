@@ -1,4 +1,3 @@
-
 class GitParser
 
 	@branch: (text) ->

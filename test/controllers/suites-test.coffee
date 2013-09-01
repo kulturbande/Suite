@@ -1,4 +1,5 @@
 Suites = require '../../app/controllers/suites'
+Suite = require '../../app/models/suite'
 describe "Suites", ->
 
 	describe "GET /", ->
@@ -25,9 +26,6 @@ describe "Suites", ->
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Suites'
 
-		it "has all suites", ->
-			assert.hasTag body, '//div/ul/li/a', 'Render'
-			assert.hasTag body, '//div/ul/li[2]/a', 'Network'
 
 	describe "GET /suites/:name", ->
 		body = null
@@ -41,10 +39,6 @@ describe "Suites", ->
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Suites - Network'
 
-		it "has all suites", ->
-			assert.hasTag body, '//div/ul/li/a', 'Render'
-			assert.hasTag body, '//div/ul/li[2]/a', 'Network'
-			
 
 	describe "GET /suites/network/load", ->
 		body = null
@@ -69,4 +63,16 @@ describe "Suites", ->
 
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Test Suite - Render'
+
+	describe "GET /suites/network/change_branch/master", ->
+		response = null
+		before (done) ->
+			options =
+				uri: "#{url}/suites/network/change_branch/master"
+			request options, (err, _response, body) ->
+				response = _response
+				done()
+
+		it "redirect to network", ->
+			assert.equal response.req.path, '/suites/network'
 

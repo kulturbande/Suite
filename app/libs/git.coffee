@@ -12,6 +12,10 @@ class Git
 			branches = GitParser.branch(data)
 			callback(branches)
 
+	checkout: (branch, callback) ->
+		@_git 'checkout ' + branch, (data) ->
+			callback()
+
 	_git: (command, callback)->
 		command = 'git ' + command
 		path = @path

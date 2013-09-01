@@ -1,0 +1,8 @@
+mixin dropdown(object)
+  .btn-group
+    button(type="button", data-toggle="dropdown").btn.btn-default.dropdown-toggle= object.title
+       span.caret
+    ul(role="menu").dropdown-menu
+      - each item in object.items
+        li
+          a(href="#{item.url}")= item.name

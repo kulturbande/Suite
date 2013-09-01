@@ -19,7 +19,7 @@ describe 'Suite', ->
 		it "sets path", ->
 			assert.match suite.path, '\/suites\/network'
 		it "sets git repository", ->
-			assert.equal suite.repository != null, true
+			assert.isNotNull suite.repository
 
 		describe "generate id", ->
 			it "default Id", ->
@@ -66,7 +66,7 @@ describe 'Suite', ->
 				suite = null
 				before (done) ->
 					SuiteFacotry.createOne {path_name: 'render'}, () ->
-						Suite.getById 'render', (err, _suite) ->
+						Suite.get_by_id 'render', (err, _suite) ->
 							suite = _suite
 							done()
 				it 'returns a Suite - object', ->
@@ -76,7 +76,7 @@ describe 'Suite', ->
 
 			describe 'non-existing record', ->
 				it 'returns an error', (done) ->
-					Suite.getById 'network', (err, json) ->
+					Suite.get_by_id 'network', (err, json) ->
 						assert.equal err.message, "Suite 'network' could not be found."
 						done()
 
@@ -94,9 +94,9 @@ describe 'Suite', ->
 			before (done) ->
 				SuiteFacotry.createOne {path_name:'render'}, done
 			it 'is removed from the database', (done) ->
-				Suite.getById 'render', (err, suite) ->
+				Suite.get_by_id 'render', (err, suite) ->
 					suite.destroy (err) ->
-						Suite.getById 'render', (err) ->
+						Suite.get_by_id 'render', (err) ->
 							assert.equal err.message, "Suite 'render' could not be found."
 							done()
 
@@ -158,19 +158,42 @@ describe 'Suite', ->
 			it 'has two entries', ->
 				assert.equal suites.length, 2
 
+			it 'should update the repository', ->
+				assert.equal suites.length, 2
+
 		afterEach ->
 			redis.del Suite.key()
 
 	describe 'git', ->
-		describe 'get branches', ->
-			branches = []
-			before (done) ->
-				Suite.synchronize (err, _entries) ->
-					Suite.get_branches 'network', (err, _branches) ->
-						branches = _branches
-						done()
+		suite = null
+		before (done) ->
+			Suite.synchronize (err, _entries) ->
+				Suite.get_by_id 'network', (err, _suite) ->
+					suite = _suite
+					done()
+
+		describe 'branches', ->
 			it 'should have branches', ->
-				assert.equal branches.length > 1, true
+				assert.equal suite.branches.length > 1, true
+
+			it 'should change branch to master', (done) ->
+				suite.change_branch 'master', ->
+					current_branch = _.find suite.branches, (entry) -> entry.current
+					assert.equal current_branch.name, 'master'
+					done()
+
+			it 'current branch is master', ->
+				assert.equal suite.current_branch(), 'master'
+
+			it 'should change branch to develop', (done) ->
+				suite.change_branch 'develop', ->
+					current_branch = _.find suite.branches, (entry) -> entry.current
+					assert.equal current_branch.name, 'develop'
+					done()
+
+			it 'current branch is develop', ->
+				assert.equal suite.current_branch(), 'develop'
+
 
 
 

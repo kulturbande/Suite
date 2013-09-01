@@ -12,7 +12,7 @@ class Suite
 	@main_folder: ->
 		path.join(__dirname, '../../suites')
 
-	@getById: (id, callback) ->
+	@get_by_id: (id, callback) ->
 		redis.hget Suite.key(), id, (err, json) ->
 			if json is null
 				callback new Error("Suite '#{id}' could not be found.")
@@ -38,23 +38,24 @@ class Suite
 					if key == -1
 						suite.destroy()
 					else
+						# console.log suite
+						suite.read_repository (_suite) ->
+							_suite.save (err, item) ->
+
 						folders.splice(key, 1)
+
 				# include
 				if folders.length
 					async.each folders,((folder, _callback) ->
 						suite = new Suite {path_name: folder}
-						suite.save (err, item) ->
-							synchronized_suites.push(item)
-							_callback()
+						suite.read_repository (suite) ->
+							suite.save (err, item) ->
+								synchronized_suites.push(item)
+								_callback()
 					), (err) ->
 						callback null, synchronized_suites
 				else
 					callback null, synchronized_suites
-
-	@get_branches: (id, callback) ->
-		@getById id, (err, suite) ->
-			suite.repository.branch (branches) ->
-				callback err, branches
 
 	constructor: (attributes) ->
 		@[key] = value for key, value of attributes
@@ -67,7 +68,6 @@ class Suite
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
-		@repository = new Git(@path)
 		@
 
 	save: (callback) ->
@@ -85,5 +85,27 @@ class Suite
 				throw new Error "This isn't a folder"
 		catch error
 			throw new Error "Can't find or read that folder"
+
+	read_repository: (callback = ->) ->
+		_self = @
+		repository = new Git @path
+		repository.branch (branches) ->
+			_self.branches = branches
+			callback _self
+
+	change_branch: (name, callback = ->) ->
+		_self = @
+		repository = new Git @path
+		repository.checkout name, ->
+			_self.read_repository ->
+				_self.save ->
+					callback()
+
+	current_branch: ->
+		current_branch = ''
+		branch = _.find @branches, (entry) -> entry.current
+		if branch
+			current_branch = branch.name
+		current_branch
 
 module.exports = Suite
