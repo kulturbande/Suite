@@ -11,4 +11,4 @@ mixin main-menu(items, selected)
             a(href="/suites/#{item.id}")= capitalize(item.name)
       - if(selected)
         .navbar-form.pull-right
-          a(href="/suites/#{item.id}/load", target="_blank").btn.btn-default Load
+          a(href="/load_suite/#{item.id}", target="_blank").btn.btn-default Load

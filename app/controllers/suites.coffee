@@ -10,7 +10,7 @@ class Suites
 		Suite.synchronize (err, _suites) ->
 			Suite.all (err, suites) ->
 				suites.forEach (suite) ->
-					app.use express.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
+					app.use '/load_suite', express.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
 			console.log 'Suites synchronized!'
 		@routes()
 		@
@@ -21,6 +21,9 @@ class Suites
 		app.get '/', (req, res) ->
 			res.redirect '/suites'
 
+		app.get '/load_suite/:id', (req, res) ->
+			_self.load(req, res)
+
 		app.namespace '/suites', ->
 			app.get '/', (req, res) ->
 				_self.index(req, res)
@@ -28,9 +31,6 @@ class Suites
 			app.namespace '/:id', ->
 				app.get '/', (req, res) ->
 					_self.view(req, res)
-
-				app.get '/load', (req, res) ->
-					_self.load(req, res)
 
 				app.get '/change_branch/:name', (req, res) ->
 					_self.change_branch(req, res)

@@ -1,12 +1,8 @@
 suites_controller = new require('./controllers/suites')
-
+request_helper = require('./helpers/request_helper')()
 routes = (app) ->
 	# offset middleware
-	# app.use (req, res, next) ->
-	# 	if (req.method == 'GET' && req.url == '/img/test.jpg')
-	# 		setTimeout(next, 5000)
-	# 	else
-	# 		next()
+	app.use '/load_suite', request_helper.offset
 
 	suites = new suites_controller app
 

@@ -40,11 +40,11 @@ describe "Suites", ->
 			assert.hasTag body, '//head/title', 'Suites - Network'
 
 
-	describe "GET /suites/network/load", ->
+	describe "GET /load_suite/network", ->
 		body = null
 		before (done) ->
 			options =
-				uri: "#{url}/suites/network/load"
+				uri: "#{url}/load_suite/network"
 			request options, (err, response, _body) ->
 				body = _body
 				done()
@@ -52,11 +52,11 @@ describe "Suites", ->
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Test Suite - Network'
 
-	describe "GET /suites/render/load", ->
+	describe "GET /load_suite/render", ->
 		body = null
 		before (done) ->
 			options =
-				uri: "#{url}/suites/render/load"
+				uri: "#{url}/load_suite/render"
 			request options, (err, response, _body) ->
 				body = _body
 				done()

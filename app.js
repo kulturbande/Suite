@@ -42,10 +42,6 @@ if ('test' == app.get('env')) {
   app.set('port', 3001);
 }
 
-// http.request({}, function(request, response) {
-// 	console.log('test');
-// });
-
 // Routes
 require('./app/routes')(app);
 
