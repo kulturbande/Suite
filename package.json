@@ -17,7 +17,8 @@
     "ejs": "~0.8.4",
     "async": "~0.2.9",
     "redis": "~0.8.4",
-    "underscore": "~1.5.1"
+    "underscore": "~1.5.1",
+    "URIjs": "~1.11.2"
   },
   "devDependencies": {
     "node-dev": "~2.0.1",

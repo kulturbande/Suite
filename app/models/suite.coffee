@@ -65,6 +65,11 @@ class Suite
 			@name = @path_name.slice(0,1).toUpperCase() + @path_name.slice(1)
 		unless @id
 			@id = @path_name.replace /\s/g, '-'
+		unless @network_offset
+			@network_offset =
+				img: 0
+				css: 0
+				js: 0
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path

@@ -6,3 +6,17 @@ mixin dropdown(object)
       - each item in object.items
         li
           a(href="#{item.url}")= item.name
+
+mixin offset_form(item)
+  form(role="form", action="/suites/#{item.id}/edit", method="POST").form-horizontal
+    
+    - each value, key in item.network_offset
+      .form-group
+        label(for="network_offset#{key}").col-lg-6.control-label #{key} offset
+        .col-lg-6
+          select(id="network_offset#{key}", name="network_offset[#{key}]").form-control
+            - each option_value in [0, 50, 100, 200, 500]
+              - var selected = option_value == value
+              option(value="#{option_value}", selected=selected) #{option_value} ms
+    .col-lg-offset-6.col-lg-6
+      button(type="submit").btn.btn-default Change Offset

@@ -1,7 +1,6 @@
 Suites = require '../../app/controllers/suites'
 Suite = require '../../app/models/suite'
 describe "Suites", ->
-
 	describe "GET /", ->
 		response = null
 		before (done) ->
@@ -39,6 +38,29 @@ describe "Suites", ->
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Suites - Network'
 
+	describe "POST /suites/:name/edit", ->
+		response = null
+		suite = null
+		before (done) ->
+			options =
+				uri: "#{url}/suites/network/edit"
+				method: "POST"
+				data:
+					network_offset:
+						img: 1
+						css: 2
+						js: 3
+			request options, (err, _response, _body) ->
+				response = _response
+				Suite.get_by_id 'network', (err, item) ->
+					suite = item
+					done()
+
+		it "redirect to view", ->
+			assert.equal response.headers.location, '/suites/network'
+
+		# it "should have another network offset", ->
+		# 	assert.equal suite.network_offset.img, 1
 
 	describe "GET /load_suite/network", ->
 		body = null
@@ -75,4 +97,6 @@ describe "Suites", ->
 
 		it "redirect to network", ->
 			assert.equal response.req.path, '/suites/network'
+
+
 

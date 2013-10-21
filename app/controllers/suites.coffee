@@ -1,6 +1,7 @@
 Suite = require '../models/suite'
 path = require 'path'
 express = require 'express'
+_ = require 'underscore'
 
 class Suites
 	app = null
@@ -32,6 +33,9 @@ class Suites
 				app.get '/', (req, res) ->
 					_self.view(req, res)
 
+				app.post '/edit', (req, res) ->
+					_self.edit(req, res)
+
 				app.get '/change_branch/:name', (req, res) ->
 					_self.change_branch(req, res)
 
@@ -56,9 +60,24 @@ class Suites
 							title: current_branch
 							items: branches
 
+	edit: (req, res) ->
+		url = "/suites/#{req.params.id}"
+		Suite.get_by_id req.params.id, (err, item) ->
+			if (req.body)
+				_.each req.body, (value, key) ->
+					item[key] = value
+
+				item.save ->
+					res.redirect url
+			else
+				res.redirect url
+
 	load: (req, res) ->
-		@app.engine('html', require('ejs').renderFile);
-		res.render "../../suites/#{req.params.id}/index.html"
+		app = @app
+		Suite.get_by_id req.params.id, (err, item) ->
+			app.set 'network_offset', item.network_offset
+			app.engine('html', require('ejs').renderFile);
+			res.render "../../suites/#{req.params.id}/index.html"
 
 	index: (req, res) ->
 		Suite.all (err, items) ->

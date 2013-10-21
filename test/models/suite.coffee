@@ -20,6 +20,10 @@ describe 'Suite', ->
 			assert.match suite.path, '\/suites\/network'
 		it "sets git repository", ->
 			assert.isNotNull suite.repository
+		it "sets network_offset - value", ->
+			assert.equal suite.network_offset.img, 0
+			assert.equal suite.network_offset.css, 0
+			assert.equal suite.network_offset.js, 0
 
 		describe "generate id", ->
 			it "default Id", ->
@@ -55,11 +59,18 @@ describe 'Suite', ->
 		describe 'save', ->
 			suite = null
 			before (done) ->
-				suite = new Suite {path_name: 'render'}
+				suite = new Suite 
+					path_name: 'render'
+					network_offset: 
+						foo: 300
+						bar: 200
 				suite.save ->
 					done()
 			it 'returns a Suite - object', ->
 				assert.instanceOf suite, Suite
+			it 'has the correct network offset', ->
+				assert.equal suite.network_offset.foo, 300
+				assert.equal suite.network_offset.bar, 200
 
 		describe 'get one', ->
 			describe 'existing record', ->
@@ -193,7 +204,3 @@ describe 'Suite', ->
 
 			it 'current branch is develop', ->
 				assert.equal suite.current_branch(), 'develop'
-
-
-
-
