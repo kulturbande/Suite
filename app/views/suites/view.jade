@@ -7,8 +7,13 @@ block content
 
   .row
     .col-lg-4
-      h3 Change Suite
-      mixin dropdown(dropdown.branch)
-      mixin offset_form(item)
+      h3 Change #{item.name} - Suite
+      .row
+        .col-lg-6 Change Branch
+        .col-lg-6 
+          mixin dropdown(dropdown.branch)
+      .row
+        .col-lg-12
+          mixin offset_form(item)
     .col-lg-8
       iframe(src="/load_suite/#{item.path_name}")
