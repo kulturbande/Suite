@@ -23,10 +23,19 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(require('connect-assets')());
 
+app.use(express.cookieParser('5u1te'));
+app.use(express.session({ cookie: { maxAge: 60000 }}));
+
 // Helpers
 app.use(function(req, res, next){
-  res.locals = require('./app/helpers/string_helper')();
-  next();
+	var session = req.session;
+	var messages = session.messages || (session.messages = []);
+	
+	req.flash = function(level, message) {
+		messages.push([level, message]);
+	}
+	res.locals = require('./app/helpers/layout_helper')(req);
+	next();
 });
 
 app.use(app.router);

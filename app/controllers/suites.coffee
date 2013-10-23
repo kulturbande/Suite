@@ -68,6 +68,7 @@ class Suites
 					item[key] = value
 
 				item.save ->
+					req.flash 'success', 'Successfully saved settings.'
 					res.redirect url
 			else
 				res.redirect url

@@ -12,3 +12,7 @@ mixin main-menu(items, selected)
       - if(selected)
         .navbar-form.pull-right
           a(href="/load_suite/#{item.id}", target="_blank").btn.btn-default Load
+  - each item in messages()
+    div(class="alert alert-#{item[0]}") 
+      button(type="button", data-dismiss="alert", aria-hidden="true").close &times;
+      = item[1]
