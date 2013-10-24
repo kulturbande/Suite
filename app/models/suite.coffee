@@ -47,11 +47,15 @@ class Suite
 				# include
 				if folders.length
 					async.each folders,((folder, _callback) ->
-						suite = new Suite {path_name: folder}
-						suite.read_repository (suite) ->
-							suite.save (err, item) ->
-								synchronized_suites.push(item)
-								_callback()
+						folder_path = path.join(Suite.main_folder(), folder)
+						if fs.lstatSync(folder_path).isDirectory()
+							suite = new Suite {path_name: folder}
+							suite.read_repository (suite) ->
+								suite.save (err, item) ->
+									synchronized_suites.push(item)
+									_callback()
+						else
+							_callback()
 					), (err) ->
 						callback null, synchronized_suites
 				else
@@ -89,7 +93,7 @@ class Suite
 			unless stats.isDirectory()
 				throw new Error "This isn't a folder"
 		catch error
-			throw new Error "Can't find or read that folder"
+			throw new Error "Can't find or read #{@path} folder"
 
 	read_repository: (callback = ->) ->
 		_self = @
