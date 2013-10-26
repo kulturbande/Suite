@@ -5,10 +5,13 @@ UserFactory =
 	createSeveral: (callback) ->
 		fooUser =
 			name: 'foo'
+			password: '123'
 		barUser =
 			name: 'bar'
+			password: '123'
 		testUser =
 			name: 'test'
+			password: '123'
 		userAttributes = [fooUser, barUser, testUser]
 		createOne = @createOne
 		runSequentially = (item, otherItems...) ->

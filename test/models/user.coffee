@@ -8,7 +8,7 @@ describe 'User', ->
 	describe 'create', ->
 		user = null
 		before (done) ->
-			user = new User {name: 'foo'}
+			user = new User {name: 'foo', password: 'test'}
 			done()
 		it "sets name", ->
 			assert.equal user.name, 'foo'
@@ -26,16 +26,20 @@ describe 'User', ->
 			before (done) ->
 				user = new User 
 					name: 'foo'
+					password: 'foo'
 				user.save ->
 					done()
 			it 'returns an User - object', ->
 				assert.instanceOf user, User
 
+			it 'should not store the password as plain - text', ->
+				assert.notEqual user.password, 'foo'
+
 		describe 'get one', ->
 			describe 'existing record', ->
 				user = null
 				before (done) ->
-					UserFacotry.createOne {name: 'foo'}, () ->
+					UserFacotry.createOne {name: 'foo', password: 'test'}, () ->
 						User.get_by_id 'foo', (err, _user) ->
 							user = _user
 							done()
@@ -63,7 +67,7 @@ describe 'User', ->
 
 		describe 'delete', ->
 			before (done) ->
-				UserFacotry.createOne {name:'foo'}, done
+				UserFacotry.createOne {name:'foo', password: 'foo'}, done
 			it 'is removed from the database', (done) ->
 				User.get_by_id 'foo', (err, user) ->
 					user.destroy (err) ->
@@ -79,3 +83,8 @@ describe 'User', ->
 			assert.throws (->
 				new User()
 			), /provide a name/
+
+		it 'requires a password', ->
+			assert.throws (->
+				new User({name: 'foo'})
+			), /provide a password/

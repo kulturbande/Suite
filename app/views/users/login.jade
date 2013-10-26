@@ -1,6 +1,7 @@
 extends ../layout
 
 block content
+  flash_message()
   form(action="/login", method="POST").form-signin
     h2.form-signin-heading Please login
     input(type="text", placeholder="Name", name="username", autofocus).form-control

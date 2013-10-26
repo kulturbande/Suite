@@ -1,3 +1,4 @@
+User = require '../models/user'
 passport = require('passport')
 LocalStrategy = require('passport-local').Strategy
 
@@ -18,11 +19,10 @@ class Users
 			app.get '/', (req, res) ->
 				_self.login_view(req, res)
 
-
 			app.post '/', passport.authenticate 'local', 
 				successRedirect: '/',
 				failureRedirect: '/login'
-				failureFlash: true 
+				failureFlash: true
 
 	login_view: (req, res) ->
 		res.render 'users/login',
@@ -30,12 +30,8 @@ class Users
 
 	_configure_authetication: ->
 		strategy = new LocalStrategy (username, password, done) ->
-			console.log(username+" "+password)
-			user = {
-				id: username,
-				name: username
-			}
-			done(null, user)
+			User.authenticate username, passport, (err, user) ->
+				done(err, user)
 
 		passport.use strategy
 
@@ -43,8 +39,7 @@ class Users
 			done(null, user.id)
 
 		passport.deserializeUser (id, done) ->
-			# User.findById(id, function(err, user) {
-			# 	done(err, user);
-			# });
+			User.get_by_id id, (err, user) ->
+				done err, user
 
 module.exports = Users

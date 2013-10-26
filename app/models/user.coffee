@@ -20,10 +20,17 @@ class User
 				users.push user
 			callback null, users
 
+	@authenticate: (name, password, callback) ->
+		User.get_by_id name, (err, user) ->
+			callback null, user
+
 	constructor: (attributes) ->
 		@[key] = value for key, value of attributes
 		unless @name
 			throw new Error("You need to provide a name!")
+		unless @password
+			throw new Error("You need to provide a password!")
+
 		unless @id
 			@id = @name.replace /\s/g, '-'
 		@
