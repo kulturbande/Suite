@@ -29,11 +29,6 @@ class Users
 			title: 'Login'
 
 	_configure_authetication: ->
-		app = @app
-		app.configure ->
-			app.use passport.initialize()
-			app.use passport.session()
-
 		strategy = new LocalStrategy (username, password, done) ->
 			console.log(username+" "+password)
 			user = {

@@ -123,7 +123,7 @@ describe 'Suite', ->
 		it 'requires a valid folder name', ->
 			assert.throws (->
 				new Suite {'path_name': 'foo'}
-			), /Can\'t find or read that folder/
+			), /Can\'t find or read [\w\/]*suites\/foo folder/
 
 	describe 'synchronize', ->
 		describe 'without database entries', ->

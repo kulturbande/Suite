@@ -9,7 +9,8 @@ require('express-namespace');
 
 var express = require('express')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , passport = require('passport');
 
 var app = module.exports = express();
 
@@ -25,6 +26,8 @@ app.use(require('connect-assets')());
 
 app.use(express.cookieParser('5u1te'));
 app.use(express.session({ cookie: { maxAge: 60000 }}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Helpers
 app.use(function(req, res, next){
