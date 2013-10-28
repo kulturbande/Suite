@@ -23,7 +23,7 @@ class User
 
 	@authenticate: (name, password, callback) ->
 		User.get_by_id name, (err, user) ->
-			if typeof user != 'undefined'
+			if user
 				if user.password == 'sha1_' + sha1(password)
 					callback null, user
 				else

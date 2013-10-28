@@ -1,4 +1,4 @@
-mixin main-menu(items, selected)
+mixin main-menu(items, selected, logged_in)
   header
     .navbar.navbar-default
       a(href="/").navbar-brand Suite
@@ -9,9 +9,13 @@ mixin main-menu(items, selected)
             - css_class = 'active';
           li(class= css_class)
             a(href="/suites/#{item.id}")= capitalize(item.name)
-      - if(selected)
-        .navbar-form.pull-right
-          a(href="/load_suite/#{item.id}", target="_blank").btn.btn-default Load
+      ul.nav.navbar-nav.navbar-right
+        - if(selected)
+          li
+            a(href="/load_suite/#{item.id}", target="_blank") Load
+        - if(logged_in)
+          li
+            a(href="/logout", target="_blank") Logout
 
 mixin flash_message()
   - each item in messages()

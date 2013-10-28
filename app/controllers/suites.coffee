@@ -22,6 +22,12 @@ class Suites
 		app.get '/', (req, res) ->
 			res.redirect '/suites'
 
+		app.all '/suites/*', (req, res, next)->
+			if req.user
+				next()
+			else
+				res.redirect '/login'
+
 		app.get '/load_suite/:id', (req, res) ->
 			_self.load(req, res)
 
@@ -55,6 +61,7 @@ class Suites
 					title: item.name
 					main_menu: items
 					item: item
+					logged_in: !!req.user
 					dropdown:
 						branch:
 							title: current_branch
@@ -83,6 +90,7 @@ class Suites
 	index: (req, res) ->
 		Suite.all (err, items) ->
 			res.render 'suites/index',
+				logged_in: !!req.user
 				main_menu: items
 
 	change_branch: (req, res) ->
