@@ -2,6 +2,7 @@ assert 			= require 'assert'
 redis			= require('redis').createClient()
 User 			= require '../../app/models/user'
 UserFacotry 	= require '../factories/user_factory'
+sha1			= require 'sha1'
 
 describe 'User', ->
 
@@ -44,7 +45,6 @@ describe 'User', ->
 							user = _user
 							done()
 				it 'returns an User - object', ->
-					console.log user
 					assert.instanceOf user, User
 				it 'fetches the correct object', ->
 					assert.equal user.name, 'foo'
@@ -88,3 +88,22 @@ describe 'User', ->
 			assert.throws (->
 				new User({name: 'foo'})
 			), /provide a password/
+
+	describe 'authenticate', ->
+		password = 'test'
+		before (done) ->
+			UserFacotry.createOne {name: 'foo', password: password}, () ->
+				User.get_by_id 'foo', (err, user) ->
+					done()
+		it 'should give the user - object back, if name and password is correct', (done) ->
+			User.authenticate 'foo', password, (err, _user) ->
+				assert.instanceOf _user, User
+				done()
+		it 'should give false back, if password is incorrect', (done) ->
+			User.authenticate 'foo', '123', (err, user) ->
+				assert.equal user, false
+				done()
+		it 'should give false back, if name is incorrect', (done) ->
+			User.authenticate '123', '123', (err, user) ->
+				assert.equal user, false
+				done()

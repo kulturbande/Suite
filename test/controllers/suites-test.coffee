@@ -59,9 +59,6 @@ describe "Suites", ->
 		it "redirect to view", ->
 			assert.equal response.headers.location, '/suites/network'
 
-		# it "should have another network offset", ->
-		# 	assert.equal suite.network_offset.img, 1
-
 	describe "GET /load_suite/network", ->
 		body = null
 		before (done) ->

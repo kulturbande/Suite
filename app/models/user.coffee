@@ -1,4 +1,5 @@
 redis = require('redis').createClient()
+sha1 = require('sha1')
 
 class User
 	@key: ->
@@ -7,7 +8,7 @@ class User
 	@get_by_id: (id, callback) ->
 		redis.hget User.key(), id, (err, json) ->
 			if json is null
-				callback new Error("User '#{id}' could not be found.")
+				callback new Error("User '#{id}' could not be found."), false
 				return
 			user = new User JSON.parse(json)
 			callback null, user
@@ -22,7 +23,13 @@ class User
 
 	@authenticate: (name, password, callback) ->
 		User.get_by_id name, (err, user) ->
-			callback null, user
+			if typeof user != 'undefined'
+				if user.password == 'sha1_' + sha1(password)
+					callback null, user
+				else
+					callback null, false
+			else
+				callback null, false
 
 	constructor: (attributes) ->
 		@[key] = value for key, value of attributes
@@ -30,6 +37,8 @@ class User
 			throw new Error("You need to provide a name!")
 		unless @password
 			throw new Error("You need to provide a password!")
+		else unless @password.match /^sha1\_/
+			@password = 'sha1_' + sha1(@password) # encrypt password
 
 		unless @id
 			@id = @name.replace /\s/g, '-'
