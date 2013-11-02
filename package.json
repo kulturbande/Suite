@@ -7,7 +7,7 @@
     "email": "sascha@kulturbande.de"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "NODE_ENV=production node app.js",
     "devserver": "./bin/devserver",
     "test": "./bin/test"
   },
