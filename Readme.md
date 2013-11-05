@@ -53,6 +53,18 @@ Please keep in mind that other applications maybe listen to that port and it wil
 
 Press ```ctrl + A + D``` to go back to the parent window. The application should now run in a screen session.
 
+### Create User
+
+The application has a dead simple login management and need at least one user to be usable:
+
+	node create_user.js username password environment
+
+If you run ```npm start``` the environment is _production_ and if you use the ```bin/devserver``` bash script it is _development_.
+
+### Setup production Environment
+
+If you want to run these application in production environment it would be a good idea to use another server. One quit popular server for that case is *nginx*. These [article](http://stackoverflow.com/questions/5009324/node-js-nginx-and-now) describe the whole process.
+
 ## Create new suite
 
 ### Clone a given example
@@ -61,11 +73,6 @@ Press ```ctrl + A + D``` to go back to the parent window. The application should
 	git clone https://github.com/kulturbande/TestCase-Network.git suites/network
 
 
-## Create User
 
-The application has a dead simple login management and need at least one user to be usable:
-
-
-	node create_user.js username password
 
 
