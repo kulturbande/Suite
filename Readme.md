@@ -61,14 +61,17 @@ The application has a dead simple login management and need at least one user to
 
 If you run ```npm start``` the environment is _production_ and if you use the ```bin/devserver``` bash script it is _development_.
 
-### Setup production Environment
+### Setup production environment
 
-If you want to run these application in production environment it would be a good idea to use another server. One quit popular server for that case is *nginx*. These [article](http://stackoverflow.com/questions/5009324/node-js-nginx-and-now) describe the whole process.
+The current application isn't created to run permanent in a production - environement. There are several ways to run node.js through *nginx* or *apache*. At the moment the current approch is still the default node.js - server:
+
+	sudo PORT=80 ENV=production node app.js
+
+*If you run the application on an UNIX environment you need to run it as 'root' if your port is under 1024*
 
 ## Create new suite
 
 ### Clone a given example
-
 
 	git clone https://github.com/kulturbande/TestCase-Network.git suites/network
 

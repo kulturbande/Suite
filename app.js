@@ -45,6 +45,10 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('root_folder', __dirname);
 
+if (!app.get('env')) {
+	app.set('env', 'development');
+}
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
