@@ -27,18 +27,16 @@ describe "Users", ->
 			UserFacotry.createOne {name:'foo', password: 'foo'}, done
 
 		it "redirect to login with wrong credentials", (done) ->
-			request options, (err, response, _body) ->
-				assert.equal response.headers.location, '/login'
-				done()
+			request_agent.post(options.uri)
+				.send(options.data)
+				.end (err, response) ->
+					assert.equal response.redirects[0], url + '/login'
+					done()
 
-		# it "redirect to / with correct credentials", (done) ->
-		# 	options.data.password = 'foo'
-		# 	request options, (err, response, _body) ->
-		# 		assert.equal response.headers.location, '/'
-		# 		done()
-			
-
-	
-
-
-
+		it "redirect to / with correct credentials", (done) ->
+			options.data.password = 'foo'
+			request_agent.post(options.uri)
+				.send(options.data)
+				.end (err, response) ->
+					assert.equal response.redirects[0], url + '/'
+					done()
