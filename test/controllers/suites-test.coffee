@@ -1,6 +1,29 @@
-Suites = require '../../app/controllers/suites'
-Suite = require '../../app/models/suite'
+Suites 		= require '../../app/controllers/suites'
+Suite 		= require '../../app/models/suite'
+User 		= require '../../app/models/user'
+UserFacotry = require '../factories/user_factory'
+
+user = 
+	username:'foo'
+	password: 'foo'
+
+login_user = (callback) ->
+	request_agent.post("#{url}/login")
+		.send(user)
+		.end (err, res) ->
+			callback()
+
+logout_user = (callback) ->
+	request_agent
+		.get("#{url}/logout")
+		.end (err, res) ->
+			callback()
+
 describe "Suites", ->
+
+	before (done) ->
+		UserFacotry.createOne {name: user.username, password: user.password}, done
+
 	describe "GET /", ->
 		response = null
 		before (done) ->
@@ -27,37 +50,52 @@ describe "Suites", ->
 
 
 	describe "GET /suites/:name", ->
+		redirects = null
 		body = null
-		before (done) ->
-			options =
-				uri: "#{url}/suites/network"
-			request options, (err, response, _body) ->
-				body = _body
+		make_request = (callback) ->
+			request_agent.get "#{url}/suites/network", (response) ->
+				body = response.text
+				redirects = response.redirects[0]
+				callback()
+
+		it "redirect to login without login - session", (done) ->
+			make_request ->
+				assert.equal redirects, "#{url}/login"
 				done()
 
-		it "has title", ->
-			assert.hasTag body, '//head/title', 'Suites - Network'
+		it "has title", (done) ->
+			login_user ->
+				make_request ->
+					assert.hasTag body, '//head/title', 'Suites - Network'
+					logout_user done
+			
 
 	describe "POST /suites/:name/edit", ->
-		response = null
+		redirects = null
 		suite = null
-		before (done) ->
-			options =
-				uri: "#{url}/suites/network/edit"
-				method: "POST"
-				data:
-					network_offset:
-						img: 1
-						css: 2
-						js: 3
-			request options, (err, _response, _body) ->
-				response = _response
-				Suite.get_by_id 'network', (err, item) ->
-					suite = item
-					done()
 
-		it "redirect to view", ->
-			assert.equal response.headers.location, '/suites/network'
+		make_request = (callback) ->
+			data =
+				network_offset:
+					img: 1
+					css: 2
+					js: 3
+			request_agent.post("#{url}/suites/network/edit")
+				.send(data)
+				.end (err, _response) ->
+					redirects = _response.redirects[0]
+					callback()
+
+		it "redirect to login without login - session", (done) ->
+			make_request ->
+				assert.equal redirects, "#{url}/login"
+				done()
+
+		it "redirect to view", (done) ->
+			login_user ->
+				make_request ->
+					assert.equal redirects, "#{url}/suites/network"
+					logout_user done
 
 	describe "GET /load_suite/network", ->
 		body = null
@@ -84,16 +122,28 @@ describe "Suites", ->
 			assert.hasTag body, '//head/title', 'Test Suite - Render'
 
 	describe "GET /suites/network/change_branch/master", ->
-		response = null
-		before (done) ->
-			options =
-				uri: "#{url}/suites/network/change_branch/master"
-			request options, (err, _response, body) ->
-				response = _response
-				done()
+		redirects = null
 
-		it "redirect to network", ->
-			assert.equal response.req.path, '/suites/network'
+		make_request = (callback) ->
+			request_agent.get "#{url}/suites/network/change_branch/master", (response) ->
+				redirects = response.redirects[0]
+				callback()
+
+		it "redirect to network", (done) ->
+			login_user ->
+				make_request ->
+					assert.equal redirects, "#{url}/suites/network"
+					logout_user done
+
+		it "redirect to login without login - session", (done) ->
+			make_request ->
+				assert.equal redirects, "#{url}/login"
+				logout_user done
+
+
+	after (done) ->
+		User.get_by_id user.username, (err, user) ->
+			user.destroy done
 
 
 

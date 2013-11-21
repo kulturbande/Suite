@@ -20,10 +20,10 @@ describe "Users", ->
 		before (done) ->
 			options =
 				uri: "#{url}/login"
-				method: "POST"
 				data:
 					username: 'foo'
 					password: '123'
+			request_agent.post(options.uri)
 			UserFacotry.createOne {name:'foo', password: 'foo'}, done
 
 		it "redirect to login with wrong credentials", (done) ->
