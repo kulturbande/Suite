@@ -121,26 +121,6 @@ describe "Suites", ->
 		it "has title", ->
 			assert.hasTag body, '//head/title', 'Test Suite - Render'
 
-	describe "GET /suites/network/change_branch/master", ->
-		redirects = null
-
-		make_request = (callback) ->
-			request_agent.get "#{url}/suites/network/change_branch/master", (response) ->
-				redirects = response.redirects[0]
-				callback()
-
-		it "redirect to network", (done) ->
-			login_user ->
-				make_request ->
-					assert.equal redirects, "#{url}/suites/network"
-					logout_user done
-
-		it "redirect to login without login - session", (done) ->
-			make_request ->
-				assert.equal redirects, "#{url}/login"
-				logout_user done
-
-
 	after (done) ->
 		User.get_by_id user.username, (err, user) ->
 			user.destroy done

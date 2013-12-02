@@ -42,9 +42,6 @@ class Suites
 				app.post '/edit', (req, res) ->
 					_self.edit(req, res)
 
-				app.get '/change_branch/:name', (req, res) ->
-					_self.change_branch(req, res)
-
 	view: (req, res) ->
 		Suite.all (err, items) ->
 			Suite.get_by_id req.params.id, (err, item) ->
@@ -53,19 +50,16 @@ class Suites
 				for value, key in item.branches
 					if value.current
 						current_branch = value.name
-					branches[key]=
-						name: value.name
-						url: "/suites/#{item.id}/change_branch/#{value.name}"
+					branches[key] = value.name
 
 				res.render 'suites/view',
 					title: item.name
 					main_menu: items
 					item: item
 					logged_in: !!req.user
-					dropdown:
-						branch:
-							title: current_branch
-							items: branches
+					branch:
+						current_branch: current_branch
+						branches: branches
 
 	edit: (req, res) ->
 		url = "/suites/#{req.params.id}"
@@ -75,8 +69,13 @@ class Suites
 					item[key] = value
 
 				item.save ->
-					req.flash 'success', 'Successfully saved settings.'
-					res.redirect url
+					if item.branch && item.branch != item.current_branch()
+						item.change_branch item.branch, ->
+							req.flash 'success', 'Successfully saved settings and change branch.'
+							res.redirect url
+					else
+						req.flash 'success', 'Successfully saved settings.'
+						res.redirect url
 			else
 				res.redirect url
 
@@ -92,10 +91,5 @@ class Suites
 			res.render 'suites/index',
 				logged_in: !!req.user
 				main_menu: items
-
-	change_branch: (req, res) ->
-		Suite.get_by_id req.params.id, (err, suite) ->
-			suite.change_branch req.params.name, ->
-				res.redirect "/suites/#{req.params.id}"
 
 module.exports = Suites

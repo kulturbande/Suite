@@ -1,22 +1,19 @@
-mixin dropdown(object)
-  .btn-group
-    button(type="button", data-toggle="dropdown").btn.btn-default.dropdown-toggle= object.title
-       span.caret
-    ul(role="menu").dropdown-menu
-      - each item in object.items
-        li
-          a(href="#{item.url}")= item.name
-
-mixin offset_form(item)
+mixin settings_form(item, branch)
   form(role="form", action="/suites/#{item.id}/edit", method="POST").form-horizontal
-    
+    .form-group
+      label(for="branch").col-lg-4.control-label branch
+      .col-lg-8
+        select(id="branch", name="branch").form-control
+          - each option_value in branch.branches
+            - var selected = option_value == branch.current_branch
+            option(value="#{option_value}", selected=selected) #{option_value}
     - each value, key in item.network_offset
       .form-group
-        label(for="network_offset#{key}").col-lg-6.control-label #{key} offset
-        .col-lg-6
+        label(for="network_offset#{key}").col-lg-4.control-label #{key} offset
+        .col-lg-8
           select(id="network_offset#{key}", name="network_offset[#{key}]").form-control
             - each option_value in [0, 50, 100, 200, 500]
               - var selected = option_value == value
               option(value="#{option_value}", selected=selected) #{option_value} ms
-    .col-lg-offset-6.col-lg-6
-      button(type="submit").btn.btn-default Change Offset
+    .col-lg-offset-4.col-lg-8
+      button(type="submit").btn.btn-default Change Settings
