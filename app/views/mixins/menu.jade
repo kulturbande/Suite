@@ -19,6 +19,6 @@ mixin main-menu(items, selected, logged_in)
 
 mixin flash_message()
   - each item in messages()
-    div(class="alert alert-#{item[0]}") 
+    div(class="alert alert-#{item[0] == 'error' ? 'danger' : item[0]}") 
       button(type="button", data-dismiss="alert", aria-hidden="true").close &times;
       = item[1]

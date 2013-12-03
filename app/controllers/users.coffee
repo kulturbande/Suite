@@ -22,6 +22,8 @@ class Users
 			app.post '/', passport.authenticate 'local', 
 				successRedirect: '/',
 				failureRedirect: '/login'
+				successFlash: 'You are now logged in!'
+				failureFlash: 'Can\'t find user with that name and password combination!'
 
 		app.get '/logout', (req, res) ->
 			_self.logout req, res

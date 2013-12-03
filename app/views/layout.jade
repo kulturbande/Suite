@@ -9,6 +9,7 @@ html
     != css('style')
   body
     .container
+      mixin flash_message()
       block content
 
     script(src='/bower_components/jquery/jquery.min.js')
