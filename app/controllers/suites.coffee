@@ -83,6 +83,7 @@ class Suites
 		app = @app
 		Suite.get_by_id req.params.id, (err, item) ->
 			app.set 'network_offset', item.network_offset
+			app.disable 'view cache',
 			app.engine('html', require('ejs').renderFile);
 			res.render "../../suites/#{req.params.id}/index.html"
 

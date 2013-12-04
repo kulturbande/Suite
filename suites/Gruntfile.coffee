@@ -1,12 +1,6 @@
 module.exports = (grunt) ->
 
 	grunt.initConfig
-		pkg: grunt.file.readJSON('package.json') # make package.json available
-		base64:
-			html:
-				files: 
-					'logo_header.b64': ['./img/logo_header.png']
-
 		imageEmbed:
 			side: 
 				src: [ "network/css/side.css" ]
@@ -18,9 +12,14 @@ module.exports = (grunt) ->
 				dest: "network/css/output/layout.css"
 				options:
 					deleteAfterEncoding : false
-		
 
-	grunt.loadNpmTasks 'grunt-base64'
+			inline: 
+				src: [ "network/css/inline.css" ]
+				dest: "network/css/output/inline.css"
+				options:
+					deleteAfterEncoding : false
+
 	grunt.loadNpmTasks 'grunt-image-embed'
 
-	#grunt.registerTask 'default', ['uglify'] # default task
+	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
+	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
