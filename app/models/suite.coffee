@@ -30,6 +30,9 @@ class Suite
 
 	@synchronize: (callback) ->
 		fs.readdir Suite.main_folder(), (err, folders) ->
+			# remove node_modules - folder
+			folders = folders.filter((folder) -> folder != 'node_modules')
+			
 			synchronized_suites = []
 			Suite.all (err, suites_in_db) ->
 				# read database entries
