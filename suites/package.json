@@ -9,6 +9,7 @@
     "grunt-webfont": "~0.2.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-processhtml": "~0.2.6",
-    "grunt-contrib-cssmin": "~0.7.0"
+    "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-imagine": "~0.3.2"
   }
 }

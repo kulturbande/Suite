@@ -40,9 +40,24 @@ module.exports = (grunt) ->
 			minify:
 				options:
 					keepSpecialComments: false
+					report: 'min'
 				src: ['network/build/suite.css']
 				dest: 'network/build/suite.min.css'
 
+		pngmin: 
+			src: ['network/img/*.png']
+			dest: 'network/build'
+
+		gifmin:
+			src: ['network/img/*.gif']
+			dest: 'network/build'
+
+		jpgmin:
+			src: ['network/img/*.jpg']
+			dest: 'network/build'
+			quality: 80
+
+	grunt.loadNpmTasks 'grunt-imagine'
 	grunt.loadNpmTasks 'grunt-contrib-cssmin'
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -51,4 +66,4 @@ module.exports = (grunt) ->
 	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
 	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
 
-	grunt.registerTask 'default', ['concat', 'uglify:obfuscate']
+	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin']
