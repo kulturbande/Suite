@@ -77,6 +77,8 @@ class Suite
 				img: 0
 				css: 0
 				js: 0
+		unless @file_name
+			@file_name = 'index.html'
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
@@ -105,13 +107,24 @@ class Suite
 			_self.branches = branches
 			callback _self
 
+	find_index_file: (callback = ->) ->
+		_self = @
+		@file_name = 'index.html'
+		fs.readdir _self.path, (err, files) ->
+			if _.find(files, (file) -> file == 'index.min.html')
+				_self.file_name = 'index.min.html'
+				callback _self
+			else
+				callback _self
+
 	change_branch: (name, callback = ->) ->
 		_self = @
 		repository = new Git @path
 		repository.checkout name, ->
 			_self.read_repository ->
-				_self.save ->
-					callback()
+				_self.find_index_file ->
+					_self.save ->
+						callback()
 
 	current_branch: ->
 		current_branch = ''

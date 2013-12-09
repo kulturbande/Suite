@@ -85,7 +85,7 @@ class Suites
 			app.set 'network_offset', item.network_offset
 			app.disable 'view cache',
 			app.engine('html', require('ejs').renderFile);
-			res.render "../../suites/#{req.params.id}/index.html"
+			res.render "../../suites/#{item.path_name}/#{item.file_name}"
 
 	index: (req, res) ->
 		Suite.all (err, items) ->

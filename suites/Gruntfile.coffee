@@ -65,6 +65,20 @@ module.exports = (grunt) ->
 				files:
 					'network/build/fonts/vendors/Ubuntu-Regular.ttf': ['network/fonts/vendors/Ubuntu-Regular.ttf']
 
+		htmlmin:
+			index:
+				options:
+					removeComments: true
+					collapseWhitespace: true
+					collapseBooleanAttributes: true
+					removeAttributeQuotes: true
+					removeRedundantAttributes: true
+					removeEmptyAttributes: true
+					removeOptionalTags: true
+				files:
+					'network/index.min.html': 'network/index.html'
+
+	grunt.loadNpmTasks 'grunt-contrib-htmlmin'
 	grunt.loadNpmTasks 'grunt-font-optimizer'
 	grunt.loadNpmTasks 'grunt-imagine'
 	grunt.loadNpmTasks 'grunt-contrib-cssmin'
@@ -75,4 +89,4 @@ module.exports = (grunt) ->
 	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
 	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
 
-	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin']
+	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin', 'font_optimizer', 'htmlmin']
