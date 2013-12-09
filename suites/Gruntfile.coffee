@@ -57,6 +57,15 @@ module.exports = (grunt) ->
 			dest: 'network/build'
 			quality: 80
 
+		font_optimizer:
+			options:
+				chars: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+				includeFeatures: ['kern']
+			ttf:
+				files:
+					'network/build/fonts/vendors/Ubuntu-Regular.ttf': ['network/fonts/vendors/Ubuntu-Regular.ttf']
+
+	grunt.loadNpmTasks 'grunt-font-optimizer'
 	grunt.loadNpmTasks 'grunt-imagine'
 	grunt.loadNpmTasks 'grunt-contrib-cssmin'
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
