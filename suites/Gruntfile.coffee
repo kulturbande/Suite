@@ -66,4 +66,4 @@ module.exports = (grunt) ->
 	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
 	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
 
-	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin']
+	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin']
