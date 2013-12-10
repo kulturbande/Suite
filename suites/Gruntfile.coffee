@@ -79,24 +79,29 @@ module.exports = (grunt) ->
 					'network/index.min.html': 'network/index.html'
 
 		aws: grunt.file.readJSON 'aws.json'
-		s3:
+		aws_s3:
 			options:
-				key: '<%= aws.key %>'
-				secret: '<%= aws.secret %>'
+				accessKeyId: '<%= aws.key %>'
+				secretAccessKey: '<%= aws.secret %>'
 				bucket: '<%= aws.bucket %>'
+				access: 'public-read'
+				region: '<%= aws.region %>'
 			production:
-				upload: [
-					src: 'network/build/*'
-					dest: 'build/'
+				files: [
+					src: 'network/build/suite.min.css',
+					dest: 'suite.min.css'
 				,
-					src: 'network/build/fonts/*'
-					dest: 'build/fonts'
+					src: 'network/build/suite.min.js',
+					dest: 'suite.min.js'
 				,
-					src: 'network/build/img/*'
-					dest: 'build/img'
+					src: 'network/build/img/*',
+					dest: 'img/'
+				,
+					src: 'network/build/fonts/vendors/*',
+					dest: 'fonts/vendors/'
 				]
 
-	grunt.loadNpmTasks 'grunt-s3'
+	grunt.loadNpmTasks 'grunt-aws-s3'
 	grunt.loadNpmTasks 'grunt-contrib-htmlmin'
 	grunt.loadNpmTasks 'grunt-font-optimizer'
 	grunt.loadNpmTasks 'grunt-imagine'
@@ -109,3 +114,4 @@ module.exports = (grunt) ->
 	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
 
 	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin', 'font_optimizer', 'htmlmin']
+	grunt.registerTask 'minimize', ['concat', 'uglify:obfuscate', 'cssmin', 'htmlmin']
