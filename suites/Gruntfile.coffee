@@ -86,19 +86,26 @@ module.exports = (grunt) ->
 				bucket: '<%= aws.bucket %>'
 				access: 'public-read'
 				region: '<%= aws.region %>'
-			production:
+			cdn:
 				files: [
-					src: 'network/build/suite.min.css',
+					src: 'network/build/suite.min.css'
 					dest: 'suite.min.css'
 				,
-					src: 'network/build/suite.min.js',
+					src: 'network/build/suite.min.js'
 					dest: 'suite.min.js'
 				,
-					src: 'network/build/img/*',
+					cwd: 'network/build/img/'	
+					src: ['**']
 					dest: 'img/'
+					expand: true
 				,
-					src: 'network/build/fonts/vendors/*',
+					cwd: 'network/fonts/vendors/'	
+					src: ['side.*']
 					dest: 'fonts/vendors/'
+					expand: true
+				,
+					src: 'network/build/fonts/vendors/Ubuntu-Regular.ttf'
+					dest: 'fonts/vendors/Ubuntu-Regular.ttf'
 				]
 
 	grunt.loadNpmTasks 'grunt-aws-s3'
