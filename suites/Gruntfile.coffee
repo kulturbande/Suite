@@ -107,6 +107,33 @@ module.exports = (grunt) ->
 					src: 'network/build/fonts/vendors/Ubuntu-Regular.ttf'
 					dest: 'fonts/vendors/Ubuntu-Regular.ttf'
 				]
+			img:
+				options:
+					bucket: '<%= aws.images_bucket %>'
+				files: [
+					cwd: 'network/build/img/'	
+					src: ['**']
+					dest: ''
+					expand: true
+				]
+			js:
+				files: [
+					src: 'network/build/suite.min.js'
+					dest: 'suite.min.js'
+					bucket: '<%= aws.javascripts_bucket %>'
+				]
+			font:
+				options:
+					bucket: '<%= aws.fonts_bucket %>'
+				files: [
+					cwd: 'network/fonts/vendors/'	
+					src: ['side.*']
+					dest: ''
+					expand: true
+				,
+					src: 'network/build/fonts/vendors/Ubuntu-Regular.ttf'
+					dest: 'Ubuntu-Regular.ttf'
+				]
 
 	grunt.loadNpmTasks 'grunt-aws-s3'
 	grunt.loadNpmTasks 'grunt-contrib-htmlmin'
