@@ -1,3 +1,4 @@
 node_modules/*
 suites/node_modules/*
+suites/aws.json
 .*

@@ -78,6 +78,25 @@ module.exports = (grunt) ->
 				files:
 					'network/index.min.html': 'network/index.html'
 
+		aws: grunt.file.readJSON 'aws.json'
+		s3:
+			options:
+				key: '<%= aws.key %>'
+				secret: '<%= aws.secret %>'
+				bucket: '<%= aws.bucket %>'
+			production:
+				upload: [
+					src: 'network/build/*'
+					dest: 'build/'
+				,
+					src: 'network/build/fonts/*'
+					dest: 'build/fonts'
+				,
+					src: 'network/build/img/*'
+					dest: 'build/img'
+				]
+
+	grunt.loadNpmTasks 'grunt-s3'
 	grunt.loadNpmTasks 'grunt-contrib-htmlmin'
 	grunt.loadNpmTasks 'grunt-font-optimizer'
 	grunt.loadNpmTasks 'grunt-imagine'

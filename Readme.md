@@ -32,6 +32,10 @@ All necessary packages are prepared now and the application itself needs to inst
 	git submodule update
 	npm install
 
+Copy the _aws.json to aws.json if you want to use Amazon S3
+
+	cp suites/_aws.json suites/aws.json
+
 ### Start Server
 
 The redis - server needs to be started first. This can be easily done by running ```redis-server /path/to/redis.conf```. In case of Ubuntu it should be:
