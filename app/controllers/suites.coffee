@@ -1,17 +1,18 @@
 Suite = require '../models/suite'
 path = require 'path'
 express = require 'express'
+connect = require 'connect'
 _ = require 'underscore'
 
 class Suites
 	app = null
+	request_helper = null
 
 	constructor: (app) ->
+		request_helper = require('../helpers/request_helper')(app)
 		@app = app
 		Suite.synchronize (err, _suites) ->
-			Suite.all (err, suites) ->
-				suites.forEach (suite) ->
-					app.use '/load_suite', express.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
+			set_static_path()
 			console.log 'Suites synchronized!'
 		@routes()
 		@
@@ -69,6 +70,7 @@ class Suites
 					item[key] = value
 
 				item.save ->
+					set_static_path item
 					if item.branch && item.branch != item.current_branch()
 						item.change_branch item.branch, ->
 							req.flash 'success', 'Successfully saved settings and change branch.'
@@ -81,7 +83,11 @@ class Suites
 
 	load: (req, res) ->
 		app = @app
+
 		Suite.get_by_id req.params.id, (err, item) ->
+			if err
+				res.redirect "/suites"
+				return
 			app.set 'network_offset', item.network_offset
 			app.disable 'view cache',
 			app.engine('html', require('ejs').renderFile);
@@ -92,5 +98,28 @@ class Suites
 			res.render 'suites/index',
 				logged_in: !!req.user
 				main_menu: items
+
+	set_static_path = (_suite = null) ->
+		static_path = '/load_suite'
+
+		# remove all previous middlewares
+		i = 0
+		while i < app.stack.length
+			if app.stack[i].route == static_path
+				app.stack.splice(i, 1)
+			else
+				i++
+
+		# enable middlewares
+		app.use static_path, request_helper.offset
+		enabled_compression_middleware = false
+
+		Suite.all (err, suites) ->
+			suites.forEach (suite) ->
+				# only enable the compression middleware once
+				if !enabled_compression_middleware && suite.compression_enabled
+					enabled_compression_middleware = true
+					app.use static_path, connect.compress()
+				app.use static_path, express.static path.join(__dirname, "../../suites/#{suite.path_name}")
 
 module.exports = Suites

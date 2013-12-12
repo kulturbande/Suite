@@ -1,19 +1,41 @@
 module.exports = (grunt) ->
 
+	cdn_files = (folder) ->
+		[
+			src: 'network/build/suite.min.css'
+			dest: folder + '/suite.min.css'
+		,
+			src: 'network/build/suite.min.js'
+			dest: folder + '/suite.min.js'
+		,
+			cwd: 'network/build/img/'
+			src: ['**']
+			dest: folder + '/img/'
+			expand: true
+		,
+			cwd: 'network/fonts/vendors/'
+			src: ['side.*']
+			dest: folder + '/fonts/vendors/'
+			expand: true
+		,
+			src: 'network/build/fonts/vendors/Ubuntu-Regular.ttf'
+			dest: folder + '/fonts/vendors/Ubuntu-Regular.ttf'
+		]
+
 	grunt.initConfig
 		imageEmbed:
-			side: 
+			side:
 				src: [ "network/css/side.css" ]
 				dest: "network/css/output/side.css"
 				options:
 					deleteAfterEncoding : false
-			layout: 
+			layout:
 				src: [ "network/css/layout.css" ]
 				dest: "network/css/output/layout.css"
 				options:
 					deleteAfterEncoding : false
 
-			inline: 
+			inline:
 				src: [ "network/css/inline.css" ]
 				dest: "network/css/output/inline.css"
 				options:
@@ -44,7 +66,7 @@ module.exports = (grunt) ->
 				src: ['network/build/suite.css']
 				dest: 'network/build/suite.min.css'
 
-		pngmin: 
+		pngmin:
 			src: ['network/img/*.png']
 			dest: 'network/build'
 
@@ -86,32 +108,21 @@ module.exports = (grunt) ->
 				bucket: '<%= aws.bucket %>'
 				access: 'public-read'
 				region: '<%= aws.region %>'
-			cdn:
-				files: [
-					src: 'network/build/suite.min.css'
-					dest: 'suite.min.css'
-				,
-					src: 'network/build/suite.min.js'
-					dest: 'suite.min.js'
-				,
-					cwd: 'network/build/img/'	
-					src: ['**']
-					dest: 'img/'
-					expand: true
-				,
-					cwd: 'network/fonts/vendors/'	
-					src: ['side.*']
-					dest: 'fonts/vendors/'
-					expand: true
-				,
-					src: 'network/build/fonts/vendors/Ubuntu-Regular.ttf'
-					dest: 'fonts/vendors/Ubuntu-Regular.ttf'
-				]
+
+			cdn_single:
+				files: cdn_files('single')
+
+			cdn_several:
+				files: cdn_files('several')
+
+			cdn_all:
+				files: cdn_files('all')
+
 			img:
 				options:
 					bucket: '<%= aws.images_bucket %>'
 				files: [
-					cwd: 'network/build/img/'	
+					cwd: 'network/build/img/'
 					src: ['**']
 					dest: ''
 					expand: true
@@ -126,7 +137,7 @@ module.exports = (grunt) ->
 				options:
 					bucket: '<%= aws.fonts_bucket %>'
 				files: [
-					cwd: 'network/fonts/vendors/'	
+					cwd: 'network/fonts/vendors/'
 					src: ['side.*']
 					dest: ''
 					expand: true
@@ -143,7 +154,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
 	grunt.loadNpmTasks 'grunt-image-embed'
-	
+
 	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
 	grunt.registerTask 'embed-images-in-html', ['imageEmbed:inline']
 

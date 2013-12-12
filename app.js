@@ -33,7 +33,7 @@ app.use(passport.session());
 app.use(function(req, res, next){
 	var session = req.session;
 	var messages = session.messages || (session.messages = []);
-	
+
 	req.flash = function(level, message) {
 		messages.push([level, message]);
 	}
@@ -42,6 +42,7 @@ app.use(function(req, res, next){
 });
 
 app.use(app.router);
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('root_folder', __dirname);
 

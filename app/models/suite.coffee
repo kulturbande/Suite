@@ -32,7 +32,7 @@ class Suite
 		fs.readdir Suite.main_folder(), (err, folders) ->
 			# remove node_modules - folder
 			folders = folders.filter((folder) -> folder != 'node_modules')
-			
+
 			synchronized_suites = []
 			Suite.all (err, suites_in_db) ->
 				# read database entries
@@ -79,6 +79,12 @@ class Suite
 				js: 0
 		unless @file_name
 			@file_name = 'index.html'
+
+		if @compression_enabled
+			@compression_enabled = String(@compression_enabled) == "true"
+		else
+			@compression_enabled = false
+
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path

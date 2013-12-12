@@ -15,5 +15,11 @@ mixin settings_form(item, branch)
             - each option_value in [0, 50, 100, 200, 500]
               - var selected = option_value == value
               option(value="#{option_value}", selected=selected) #{option_value} ms
+    .form-group
+      label(for="compression_enabled").col-lg-4.control-label Compression
+      .col-lg-8
+        select(id="compression_enabled", name="compression_enabled").form-control
+          option(value="true", selected=item.compression_enabled == true) Enabled
+          option(value="false", selected=item.compression_enabled == false) Disabled
     .col-lg-offset-4.col-lg-8
       button(type="submit").btn.btn-default Change Settings
