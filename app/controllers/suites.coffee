@@ -117,7 +117,7 @@ class Suites
 		Suite.all (err, suites) ->
 			suites.forEach (suite) ->
 				# only enable the compression middleware once
-				if !enabled_compression_middleware && suite.compression_enabled
+				if !enabled_compression_middleware && suite.compression != 'disabled'
 					enabled_compression_middleware = true
 					app.use static_path, connect.compress()
 				app.use static_path, express.static path.join(__dirname, "../../suites/#{suite.path_name}")

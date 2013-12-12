@@ -80,11 +80,8 @@ class Suite
 		unless @file_name
 			@file_name = 'index.html'
 
-		if @compression_enabled
-			@compression_enabled = String(@compression_enabled) == "true"
-		else
-			@compression_enabled = false
-
+		unless @compression
+			@compression = 'disabled'
 
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
