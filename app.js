@@ -40,6 +40,7 @@ app.use(function(req, res, next){
 });
 
 app.use(app.router);
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('root_folder', __dirname);
 

@@ -16,7 +16,7 @@ class Suites
 				suites.forEach (suite) ->
 					if suite.compression != 'disabled'
 						enable_compression suite
-					app.use static_path, express.static path.join(__dirname, "../../suites/#{suite.path_name}")
+					app.use static_path, connect.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
 			console.log 'Suites synchronized!'
 		@routes()
 		@
@@ -93,6 +93,7 @@ class Suites
 				res.redirect "/suites"
 				return
 			app.set 'network_offset', item.network_offset
+			app.set 'expire_headers', item.expire_headers
 			app.disable 'view cache',
 			app.engine('html', require('ejs').renderFile);
 			res.render "../../suites/#{item.path_name}/#{item.file_name}"

@@ -21,5 +21,13 @@ mixin settings_form(item, branch)
         select(id="compression", name="compression").form-control
           option(value="enabled", selected=item.compression == 'enabled') Enabled
           option(value="disabled", selected=item.compression == 'disabled') Disabled
+    .form-group
+      label(for="expire_headers").col-lg-4.control-label Expire Headers
+      .col-lg-8
+        select(id="expire_headers", name="expire_headers").form-control
+          option(value="one_year", selected=item.expire_headers == 'one_year') One Year
+          option(value="one_month", selected=item.expire_headers == 'one_month') One Month
+          option(value="one_day", selected=item.expire_headers == 'one_day') One Day
+          option(value="none", selected=item.expire_headers == 'none') None
     .col-lg-offset-4.col-lg-8
       button(type="submit").btn.btn-default Change Settings

@@ -6,6 +6,7 @@ routes = (app) ->
 
 	# offset middleware
 	app.use '/load_suite', request_helper.offset
+	app.use '/load_suite', request_helper.expire_header
 
 	suites = new suites_controller app
 	users = new users_controller app

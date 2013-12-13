@@ -83,6 +83,9 @@ class Suite
 		unless @compression
 			@compression = 'disabled'
 
+		unless @expire_headers
+			@expire_headers = 'none'
+
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
 		@
