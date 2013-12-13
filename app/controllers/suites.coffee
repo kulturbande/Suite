@@ -6,13 +6,17 @@ _ = require 'underscore'
 
 class Suites
 	app = null
-	request_helper = null
+	static_path = '/load_suite'
+	compression_enabled = false
 
 	constructor: (app) ->
-		request_helper = require('../helpers/request_helper')(app)
 		@app = app
 		Suite.synchronize (err, _suites) ->
-			set_static_path()
+			Suite.all (err, suites) ->
+				suites.forEach (suite) ->
+					if suite.compression != 'disabled'
+						enable_compression suite
+					app.use static_path, express.static path.join(__dirname, "../../suites/#{suite.path_name}")
 			console.log 'Suites synchronized!'
 		@routes()
 		@
@@ -70,7 +74,7 @@ class Suites
 					item[key] = value
 
 				item.save ->
-					set_static_path item
+					enable_compression item
 					if item.branch && item.branch != item.current_branch()
 						item.change_branch item.branch, ->
 							req.flash 'success', 'Successfully saved settings and change branch.'
@@ -99,27 +103,15 @@ class Suites
 				logged_in: !!req.user
 				main_menu: items
 
-	set_static_path = (_suite = null) ->
-		static_path = '/load_suite'
+	enable_compression = (suite) ->
+		# add middleware on top of the app stack - this is more or less a hack!
+		# normally you would add the 'app.use(connect.compress)' on top of the app.js
+		if !compression_enabled && suite.compression == 'enabled'
+			compression_enabled = true
+			app.stack.splice(2, 0, {route: static_path, handle: connect.compress()})
+		if compression_enabled && suite.compression == 'disabled'
+			compression_enabled = false
+			app.stack.splice(2, 1)
 
-		# remove all previous middlewares
-		i = 0
-		while i < app.stack.length
-			if app.stack[i].route == static_path
-				app.stack.splice(i, 1)
-			else
-				i++
-
-		# enable middlewares
-		app.use static_path, request_helper.offset
-		enabled_compression_middleware = false
-
-		Suite.all (err, suites) ->
-			suites.forEach (suite) ->
-				# only enable the compression middleware once
-				if !enabled_compression_middleware && suite.compression != 'disabled'
-					enabled_compression_middleware = true
-					app.use static_path, connect.compress()
-				app.use static_path, express.static path.join(__dirname, "../../suites/#{suite.path_name}")
 
 module.exports = Suites

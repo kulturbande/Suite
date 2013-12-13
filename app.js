@@ -6,7 +6,6 @@
 require('coffee-script');
 require('express-namespace');
 
-
 var express = require('express')
   , http = require('http')
   , path = require('path')
@@ -23,7 +22,6 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(require('connect-assets')());
-
 app.use(express.cookieParser('5u1te'));
 app.use(express.session({ cookie: { maxAge: 600000 }})); // 10 minutes
 app.use(passport.initialize());
@@ -42,7 +40,6 @@ app.use(function(req, res, next){
 });
 
 app.use(app.router);
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('root_folder', __dirname);
 
