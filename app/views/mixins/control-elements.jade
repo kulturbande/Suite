@@ -28,6 +28,7 @@ mixin settings_form(item, branch)
           option(value="one_year", selected=item.expire_headers == 'one_year') One Year
           option(value="one_month", selected=item.expire_headers == 'one_month') One Month
           option(value="one_day", selected=item.expire_headers == 'one_day') One Day
+          option(value="one_minute", selected=item.expire_headers == 'one_minute') One Minute
           option(value="none", selected=item.expire_headers == 'none') None
     .col-lg-offset-4.col-lg-8
       button(type="submit").btn.btn-default Change Settings
