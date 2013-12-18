@@ -118,9 +118,26 @@ module.exports = (grunt) ->
 			cdn_all:
 				files: cdn_files('all')
 
+			cdn_master:
+				options:
+					params:
+						CacheControl: '31536000'
+						ContentEncoding: 'gzip'
+				files: cdn_files('master')
 			img:
 				options:
 					bucket: '<%= aws.images_bucket %>'
+				files: [
+					cwd: 'network/build/img/'
+					src: ['**']
+					dest: ''
+					expand: true
+				]
+			img_master:
+				options:
+					bucket: '<%= aws.images_bucket %>'
+					params:
+						CacheControl: '31536000'
 				files: [
 					cwd: 'network/build/img/'
 					src: ['**']
@@ -160,3 +177,4 @@ module.exports = (grunt) ->
 
 	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin', 'font_optimizer', 'htmlmin']
 	grunt.registerTask 'minimize', ['concat', 'uglify:obfuscate', 'cssmin', 'htmlmin']
+	grunt.registerTask 's3_master', ['aws_s3:cdn_master', 'aws_s3:img_master']
