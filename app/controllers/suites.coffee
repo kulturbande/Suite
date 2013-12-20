@@ -95,7 +95,7 @@ class Suites
 			app.set 'network_offset', item.network_offset
 			app.set 'expire_headers', item.expire_headers
 			app.disable 'view cache',
-			app.engine('html', require('ejs').renderFile);
+			app.engine 'html', require('ejs').renderFile
 			res.render "../../suites/#{item.path_name}/#{item.file_name}"
 
 	index: (req, res) ->
