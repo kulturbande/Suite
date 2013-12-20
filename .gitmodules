@@ -4,3 +4,6 @@
 [submodule "suites/render"]
 	path = suites/render
 	url = git@github.com:kulturbande/TestCase-Render.git
+[submodule "suites/compute"]
+	path = suites/compute
+	url = git@github.com:kulturbande/TestCase-Compute.git

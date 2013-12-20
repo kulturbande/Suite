@@ -123,7 +123,7 @@ module.exports = (grunt) ->
 					params:
 						CacheControl: '31536000'
 						ContentEncoding: 'gzip'
-				files: cdn_files('master')
+				files: cdn_files('456')
 			img:
 				options:
 					bucket: '<%= aws.images_bucket %>'
@@ -141,7 +141,7 @@ module.exports = (grunt) ->
 				files: [
 					cwd: 'network/build/img/'
 					src: ['**']
-					dest: ''
+					dest: 'master'
 					expand: true
 				]
 			js:
