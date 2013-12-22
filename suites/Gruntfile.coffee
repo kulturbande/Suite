@@ -100,6 +100,20 @@ module.exports = (grunt) ->
 				files:
 					'network/index.min.html': 'network/index.html'
 
+		compress:
+			prepare_master_cdn_files:
+				options:
+					mode: 'gzip'
+				files: [
+					src: ['network/build/suite.min.js'], dest: 'network/gzip/suite.min.js'
+				,
+					src: ['network/build/suite.min.css'], dest: 'network/gzip/suite.min.css'
+				,
+					src: ['network/build/fonts/vendors/Ubuntu-Regular.ttf'], dest: 'network/gzip/Ubuntu-Regular.ttf'
+				,
+					src: ['network/fonts/vendors/side.ttf'], dest: 'network/gzip/side.ttf'
+				]
+
 		aws: grunt.file.readJSON 'aws.json'
 		aws_s3:
 			options:
@@ -118,12 +132,25 @@ module.exports = (grunt) ->
 			cdn_all:
 				files: cdn_files('all')
 
-			cdn_master:
+			cdn_gzip_compressed:
 				options:
 					params:
 						CacheControl: '31536000'
 						ContentEncoding: 'gzip'
-				files: cdn_files('456')
+				files: [
+					cwd: 'network/gzip/', src: ['*.gz'], dest: 'gzip', expand: true
+				]
+			cdn_gzip_not_compressed:
+				options:
+					params:
+						CacheControl: '31536000'
+				files: [
+					cwd: 'network/build/', src: ['*.min.*'], dest: 'gzip', expand: true
+				,
+					cwd: 'network/build/fonts/vendors', src: ['*.ttf'], dest: 'gzip', expand: true
+				,
+					cwd: 'network/fonts/vendors', src: ['side.ttf'], dest: 'gzip', expand: true
+				]
 			img:
 				options:
 					bucket: '<%= aws.images_bucket %>'
@@ -170,6 +197,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-cssmin'
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
+	grunt.loadNpmTasks 'grunt-contrib-compress'
 	grunt.loadNpmTasks 'grunt-image-embed'
 
 	grunt.registerTask 'embed-images-in-css', ['imageEmbed:side', 'imageEmbed:layout']
@@ -177,4 +205,5 @@ module.exports = (grunt) ->
 
 	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin', 'font_optimizer', 'htmlmin']
 	grunt.registerTask 'minimize', ['concat', 'uglify:obfuscate', 'cssmin', 'htmlmin']
-	grunt.registerTask 's3_master', ['aws_s3:cdn_master', 'aws_s3:img_master']
+
+	grunt.registerTask 'deploy_master', ['compress', 'aws_s3:cdn_gzip_compressed', 'aws_s3:cdn_gzip_not_compressed']
