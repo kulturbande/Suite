@@ -27,5 +27,4 @@ class Git
 				throw new Error 'Could not process git command!'
 			callback(stdout)
 
-
 module.exports = Git

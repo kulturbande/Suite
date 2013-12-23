@@ -7,7 +7,9 @@ SuiteFactory =
 			path_name: 'network'
 		renderSuite =
 			path_name: 'render'
-		suiteAttributes = [networkSuite, renderSuite]
+		computeSuite =
+			path_name: 'compute'
+		suiteAttributes = [networkSuite, renderSuite, computeSuite]
 		createOne = @createOne
 		runSequentially = (item, otherItems...) ->
 			createOne item, ->

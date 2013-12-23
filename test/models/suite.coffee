@@ -59,9 +59,9 @@ describe 'Suite', ->
 		describe 'save', ->
 			suite = null
 			before (done) ->
-				suite = new Suite 
+				suite = new Suite
 					path_name: 'render'
-					network_offset: 
+					network_offset:
 						foo: 300
 						bar: 200
 				suite.save ->
@@ -99,7 +99,7 @@ describe 'Suite', ->
 						suites = _suites
 						done();
 			it 'retrieves all suites', ->
-				assert.equal suites.length, 2
+				assert.equal suites.length, 3
 
 		describe 'delete', ->
 			before (done) ->
@@ -132,12 +132,12 @@ describe 'Suite', ->
 				Suite.synchronize (err, _entries) ->
 					synchronized_entries = _entries
 					done()
-			it 'has two entries', (done) ->
+			it 'has three entries', (done) ->
 				Suite.all (err, suites) ->
-					assert.equal suites.length, 2
+					assert.equal suites.length, 3
 					done()
-			it 'should find two suites', ->
-				assert.equal synchronized_entries.length, 2
+			it 'should find three suites', ->
+				assert.equal synchronized_entries.length, 3
 
 		describe 'with one database entry', ->
 			beforeEach (done) ->
@@ -149,10 +149,10 @@ describe 'Suite', ->
 					done()
 			it 'should find another suite', (done) ->
 				Suite.synchronize (err, entries) ->
-					assert.equal entries.length, 1
+					assert.equal entries.length, 2
 					assert.equal entries[0].path_name, 'network'
 					Suite.all (err, suites) ->
-						assert.equal suites.length, 2
+						assert.equal suites.length, 3
 						done()
 
 		describe 'with all entries', ->
@@ -166,11 +166,11 @@ describe 'Suite', ->
 				Suite.synchronize (err, entries) ->
 					assert.equal entries.length, 0
 					done()
-			it 'has two entries', ->
-				assert.equal suites.length, 2
+			it 'has three entries', ->
+				assert.equal suites.length, 3
 
 			it 'should update the repository', ->
-				assert.equal suites.length, 2
+				assert.equal suites.length, 3
 
 		afterEach ->
 			redis.del Suite.key()
