@@ -104,14 +104,15 @@ module.exports = (grunt) ->
 			prepare_master_cdn_files:
 				options:
 					mode: 'gzip'
+					level: 9
 				files: [
-					src: ['network/build/suite.min.js'], dest: 'network/gzip/suite.min.js'
+					src: ['network/build/suite.min.js'], dest: 'network/gzip/suite.min.gz.js', ext: '.gz.js'
 				,
-					src: ['network/build/suite.min.css'], dest: 'network/gzip/suite.min.css'
+					src: ['network/build/suite.min.css'], dest: 'network/gzip/suite.min.gz.css', ext: '.gz.css'
 				,
-					src: ['network/build/fonts/vendors/Ubuntu-Regular.ttf'], dest: 'network/gzip/Ubuntu-Regular.ttf'
+					src: ['network/build/fonts/vendors/Ubuntu-Regular.ttf'], dest: 'network/gzip/Ubuntu-Regular.gz.ttf', ext: '.gz.ttf'
 				,
-					src: ['network/fonts/vendors/side.ttf'], dest: 'network/gzip/side.ttf'
+					src: ['network/fonts/vendors/side.ttf'], dest: 'network/gzip/side.gz.ttf', ext: '.gz.ttf'
 				]
 
 		aws: grunt.file.readJSON 'aws.json'
@@ -135,21 +136,10 @@ module.exports = (grunt) ->
 			cdn_gzip_compressed:
 				options:
 					params:
-						CacheControl: '31536000'
+						CacheControl: 'public, max-age=31536000'
 						ContentEncoding: 'gzip'
 				files: [
-					cwd: 'network/gzip/', src: ['*.gz'], dest: 'gzip', expand: true
-				]
-			cdn_gzip_not_compressed:
-				options:
-					params:
-						CacheControl: '31536000'
-				files: [
-					cwd: 'network/build/', src: ['*.min.*'], dest: 'gzip', expand: true
-				,
-					cwd: 'network/build/fonts/vendors', src: ['*.ttf'], dest: 'gzip', expand: true
-				,
-					cwd: 'network/fonts/vendors', src: ['side.ttf'], dest: 'gzip', expand: true
+					cwd: 'network/gzip/', src: ['*.gz.*'], dest: 'compress', expand: true
 				]
 			img:
 				options:
@@ -164,11 +154,11 @@ module.exports = (grunt) ->
 				options:
 					bucket: '<%= aws.images_bucket %>'
 					params:
-						CacheControl: '31536000'
+						CacheControl: 'public, max-age=31536000'
 				files: [
 					cwd: 'network/build/img/'
 					src: ['**']
-					dest: 'master'
+					dest: 'compressed'
 					expand: true
 				]
 			js:
@@ -206,4 +196,4 @@ module.exports = (grunt) ->
 	grunt.registerTask 'default', ['concat', 'uglify:obfuscate', 'cssmin', 'pngmin', 'gifmin', 'jpgmin', 'font_optimizer', 'htmlmin']
 	grunt.registerTask 'minimize', ['concat', 'uglify:obfuscate', 'cssmin', 'htmlmin']
 
-	grunt.registerTask 'deploy_master', ['compress', 'aws_s3:cdn_gzip_compressed', 'aws_s3:cdn_gzip_not_compressed']
+	grunt.registerTask 'deploy_master', ['compress', 'aws_s3:cdn_gzip_compressed', 'aws_s3:img_master']
