@@ -20,7 +20,11 @@ request_helper = (app) ->
 	offset: (req, res, next) ->
 		if req.method == 'GET'
 			network_offset = app.get('network_offset')					# get network offset - settings
-			type = URI(req.url).directory().replace(/^\//, '')			# get the directory which is named by the type of the document
+			suffix = URI(req.url).suffix()								# get the suffix
+			switch suffix												# get type from suffix
+				when 'png', 'jpg', 'gif' then type = 'img'
+				when 'ttf', 'woff', 'eof', 'svg' then type = 'font'
+				else type = suffix
 			offset = _.find network_offset, (value, key) -> key == type # extract the offset of the current type
 
 			if offset
