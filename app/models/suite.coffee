@@ -86,6 +86,9 @@ class Suite
 		unless @expire_headers
 			@expire_headers = 'none'
 
+		unless @branch_data
+			@branch_data = {}
+
 		@path = path.join(Suite.main_folder(), @path_name)
 		@read_path() # validate path
 		@
@@ -138,5 +141,18 @@ class Suite
 		if branch
 			current_branch = branch.name
 		current_branch
+
+	add_branch_data: (data) ->
+		current_branch = @current_branch()
+		if typeof @['branch_data'][current_branch] == "undefined"
+			@['branch_data'][current_branch] = []
+
+		@['branch_data'][current_branch].push data
+
+	get_branch_data: ->
+		current_branch = @current_branch()
+		if typeof @['branch_data'][current_branch] == "undefined"
+			@['branch_data'][current_branch] = []
+		@['branch_data'][current_branch]
 
 module.exports = Suite

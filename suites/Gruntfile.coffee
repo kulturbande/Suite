@@ -75,7 +75,10 @@ module.exports = (grunt) ->
 			dest: 'network/build'
 
 		jpgmin:
-			src: ['network/img/*.jpg']
+			src: [
+				'network/img/*.jpg'
+				'network/img/responsive/*.jpg'
+			]
 			dest: 'network/build'
 			quality: 80
 
@@ -180,6 +183,92 @@ module.exports = (grunt) ->
 					dest: 'Ubuntu-Regular.ttf'
 				]
 
+		responsive_images:
+			slider:
+				options:
+					sizes: [
+						name: '240'
+						width: 240
+					,
+						name: '240'
+						width: 480
+						suffix: '-x2'
+					,
+						name: '480'
+						width: 480
+					,
+						name: '480'
+						width: 960
+						suffix: '-x2'
+					,
+						name: '640'
+						width: 640
+					,
+						name: '640'
+						width: 1280
+						suffix: '-x2'
+					,
+						name: '720'
+						width: 720
+					,
+						name: '720'
+						width: 1440
+						suffix: '-x2'
+					,
+						name: '940'
+						width: 940
+					,
+						name: '940'
+						width: 1880
+						suffix: '-x2'
+					,
+						name: '1140'
+						width: 1140
+					,
+						name: '1140'
+						width: 2280
+						suffix: '-x2'
+					]
+				files: [
+					cwd: 'network/img/'
+					src: ['slider_*']
+					dest: 'network/img/responsive/'
+					expand: true
+
+				]
+			article:
+				options:
+					sizes: [
+						name: '117'
+						width: 117
+					,
+						name: '117'
+						width: 234
+						suffix: '-x2'
+					,
+						name: '194'
+						width: 194
+					,
+						name: '194'
+						width: 388
+						suffix: '-x2'
+					,
+						name: '236'
+						width: 236
+					,
+						name: '236'
+						width: 472
+						suffix: '-x2'
+					]
+				files: [
+					cwd: 'network/img/'
+					src: ['article_1.jpg', 'article_2.jpg']
+					dest: 'network/img/responsive/'
+					expand: true
+
+				]
+
+	grunt.loadNpmTasks 'grunt-responsive-images'
 	grunt.loadNpmTasks 'grunt-aws-s3'
 	grunt.loadNpmTasks 'grunt-contrib-htmlmin'
 	grunt.loadNpmTasks 'grunt-font-optimizer'

@@ -33,8 +33,12 @@ class Suites
 			else
 				res.redirect '/login'
 
-		app.get '/load_suite/:id', (req, res) ->
-			_self.load(req, res)
+		app.namespace '/load_suite/:id', ->
+			app.get '/', (req, res) ->
+				_self.load_suite(req, res)
+
+			app.post '/add', (req, res) ->
+				_self.add_data_to_suite(req, res)
 
 		app.namespace '/suites', ->
 			app.get '/', (req, res) ->
@@ -85,7 +89,7 @@ class Suites
 			else
 				res.redirect url
 
-	load: (req, res) ->
+	load_suite: (req, res) ->
 		app = @app
 
 		Suite.get_by_id req.params.id, (err, item) ->
@@ -96,7 +100,25 @@ class Suites
 			app.set 'expire_headers', item.expire_headers
 			app.disable 'view cache',
 			app.engine 'html', require('ejs').renderFile
-			res.render "../../suites/#{item.path_name}/#{item.file_name}"
+
+			res.render "../../suites/#{item.path_name}/#{item.file_name}",
+				branch_data: item.get_branch_data()
+
+	add_data_to_suite: (req, res) ->
+		result =
+			success: false
+			data: []
+
+		Suite.get_by_id req.params.id, (err, item) ->
+			if err
+				res.json(500, result)
+				return
+
+			item.add_branch_data req.body
+			item.save (err, data) ->
+				result.success = true
+				result.data = req.body
+				res.json(result)
 
 	index: (req, res) ->
 		Suite.all (err, items) ->
