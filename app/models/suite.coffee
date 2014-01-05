@@ -155,4 +155,8 @@ class Suite
 			@['branch_data'][current_branch] = []
 		@['branch_data'][current_branch]
 
+	remove_branch_data: (callback) ->
+		@['branch_data'][@current_branch()] = []
+		@save callback
+
 module.exports = Suite

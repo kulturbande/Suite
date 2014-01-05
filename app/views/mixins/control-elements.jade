@@ -30,5 +30,9 @@ mixin settings_form(item, branch)
           option(value="one_day", selected=item.expire_headers == 'one_day') One Day
           option(value="one_minute", selected=item.expire_headers == 'one_minute') One Minute
           option(value="none", selected=item.expire_headers == 'none') None
-    .col-lg-offset-4.col-lg-8
-      button(type="submit").btn.btn-default Change Settings
+    .form-group
+      .col-lg-offset-4.col-lg-8
+        button(type="submit").btn.btn-primary.btn-block Change Settings
+    .form-group
+      .col-lg-offset-4.col-lg-8
+        a(href="/suites/#{item.id}/remove_branch_data").btn.btn-default.btn-block Remove Branch Data

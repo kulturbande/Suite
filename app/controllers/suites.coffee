@@ -38,7 +38,7 @@ class Suites
 				_self.load_suite(req, res)
 
 			app.post '/add', (req, res) ->
-				_self.add_data_to_suite(req, res)
+				_self.add_data_to_branch(req, res)
 
 		app.namespace '/suites', ->
 			app.get '/', (req, res) ->
@@ -50,6 +50,9 @@ class Suites
 
 				app.post '/edit', (req, res) ->
 					_self.edit(req, res)
+
+				app.get '/remove_branch_data', (req, res) ->
+					_self.remove_branch_data(req, res)
 
 	view: (req, res) ->
 		Suite.all (err, items) ->
@@ -89,6 +92,11 @@ class Suites
 			else
 				res.redirect url
 
+	remove_branch_data: (req, res) ->
+		Suite.get_by_id req.params.id, (err, item) ->
+			item.remove_branch_data ->
+				res.redirect "/suites/#{req.params.id}"
+
 	load_suite: (req, res) ->
 		app = @app
 
@@ -104,7 +112,7 @@ class Suites
 			res.render "../../suites/#{item.path_name}/#{item.file_name}",
 				branch_data: item.get_branch_data()
 
-	add_data_to_suite: (req, res) ->
+	add_data_to_branch: (req, res) ->
 		result =
 			success: false
 			data: []
@@ -115,6 +123,7 @@ class Suites
 				return
 
 			item.add_branch_data req.body
+			console.log item
 			item.save (err, data) ->
 				result.success = true
 				result.data = req.body
