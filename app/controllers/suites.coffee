@@ -40,6 +40,9 @@ class Suites
 			app.post '/add', (req, res) ->
 				_self.add_data_to_branch(req, res)
 
+			app.get '/branch_data', (req, res) ->
+				_self.get_data_from_branch(req, res)
+
 		app.namespace '/suites', ->
 			app.get '/', (req, res) ->
 				_self.index(req, res)
@@ -123,11 +126,24 @@ class Suites
 				return
 
 			item.add_branch_data req.body
-			console.log item
 			item.save (err, data) ->
 				result.success = true
 				result.data = req.body
 				res.json(result)
+
+	get_data_from_branch: (req, res) ->
+		result =
+			success: false
+			data: []
+
+		Suite.get_by_id req.params.id, (err, item) ->
+			if err
+				res.json(500, result)
+				return
+
+			result.success = true
+			result.data = item.get_branch_data()
+			res.json(result)
 
 	index: (req, res) ->
 		Suite.all (err, items) ->
