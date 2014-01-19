@@ -9,16 +9,15 @@ class Suites
 	static_path = '/load_suite'
 	compression_enabled = false
 
-	constructor: (app, enabled_synchronization = false) ->
+	constructor: (app) ->
 		@app = app
-		if enabled_synchronization
-			Suite.synchronize (err, _suites) ->
-				Suite.all (err, suites) ->
-					suites.forEach (suite) ->
-						if suite.compression != 'disabled'
-							enable_compression suite
-						app.use static_path, connect.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
-				console.log 'Suites synchronized!'
+		Suite.synchronize (err, _suites) ->
+			Suite.all (err, suites) ->
+				suites.forEach (suite) ->
+					if suite.compression != 'disabled'
+						enable_compression suite
+					app.use static_path, connect.static(path.join(__dirname, "../../suites/#{suite.path_name}"))
+			console.log 'Suites synchronized!'
 		@routes()
 		@
 

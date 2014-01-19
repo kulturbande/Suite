@@ -66,7 +66,7 @@ if ('test' == app.get('env')) {
 }
 
 // Routes
-require('./app/routes')(app, cluster.isMaster);
+require('./app/routes')(app);
 
 // enable cluster; disable the function in test environment
 if (cluster.isMaster && app.get('env') != 'test') {
