@@ -9,9 +9,14 @@ require('express-namespace');
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , passport = require('passport');
+  , passport = require('passport')
+  , sha1 = require('sha1')
+  , redis = require('redis').createClient()
+  , cluster = require('cluster')
+  , numberOfCores = require('os').cpus().length;
 
 var app = module.exports = express();
+var RedisStore = require('connect-redis')(express);
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -23,7 +28,10 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(require('connect-assets')());
 app.use(express.cookieParser('5u1te'));
-app.use(express.session({ cookie: { maxAge: 600000 }})); // 10 minutes
+app.use(express.session({
+	store: new RedisStore({ host: 'localhost', port: 6379, client: redis }),
+	cookie: { maxAge: 600000 }} // 10 minutes
+));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -58,8 +66,21 @@ if ('test' == app.get('env')) {
 }
 
 // Routes
-require('./app/routes')(app);
+require('./app/routes')(app, cluster.isMaster);
 
-app_server = http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+// enable cluster; disable the function in test environment
+if (cluster.isMaster && app.get('env') != 'test') {
+	for (var i = 0; i < numberOfCores; i++) {
+		cluster.fork();
+	}
+	cluster.on('exit', function(worker, code) {
+		cluster.fork();
+		console.log('Worker '+ worker.process.pid +' with code '+ code +' died! A new worker was forked!');
+	});
+	cluster.on('online', function(worker) {
+		console.log('A new worker is online! He is listening on port '+ app.get('port') +' and use "'+ app.get('env') +'" environment.');
+	});
+} else {
+	app_server = http.createServer(app).listen(app.get('port'));
+}
+

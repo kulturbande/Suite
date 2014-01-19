@@ -150,7 +150,7 @@ describe 'Suite', ->
 			it 'should find another suite', (done) ->
 				Suite.synchronize (err, entries) ->
 					assert.equal entries.length, 2
-					assert.equal entries[0].path_name, 'network'
+					assert.equal entries[0].path_name, 'compute'
 					Suite.all (err, suites) ->
 						assert.equal suites.length, 3
 						done()
